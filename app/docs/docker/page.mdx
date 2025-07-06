@@ -2,4 +2,92 @@
 title: Docker
 ---
 
+import { Steps } from 'nextra/components'
+
 # Docker
+
+แพลตฟอร์มโอเพ่นซอร์ส ที่ช่วยให้คุณสร้าง จัดการ และรันแอปพลิเคชันได้อย่างง่ายดายและสม่ำเสมอ ด้วยแนวคิด "คอนเทนเนอร์" (Container)
+
+ลองนึกภาพว่าคุณกำลังจะส่งสินค้าให้ลูกค้า แทนที่จะส่งเฉพาะตัวสินค้าเปล่าๆ ที่ลูกค้าต้องหาอุปกรณ์หรือคู่มือมาประกอบเอง คุณเลือกบรรจุทุกอย่าง — ตัวสินค้า อุปกรณ์เสริม คู่มือ และเครื่องมือที่จำเป็น — ลงใน "ตู้คอนเทนเนอร์" ที่พร้อมใช้งานทันที แล้วส่งไปถึงมือลูกค้าอย่างครบถ้วน
+
+แนวคิดของ Container ก็เช่นเดียวกัน: รวมทุกสิ่งที่แอปต้องการไว้ในแพ็กเดียว เพื่อให้สามารถทำงานได้ทุกที่โดยไม่ต้องปรับแต่งเพิ่มเติม
+
+## ทำไมต้องใช้ Docker
+
+- **Containerization:** Docker ช่วยบรรจุแอปพลิเคชันพร้อมโค้ด ไลบรารี ค่าการตั้งค่า และ dependency ต่างๆ ไว้ใน "คอนเทนเนอร์" หนึ่งเดียว เพื่อให้สามารถรันได้โดยไม่ต้องกังวลว่าเครื่องปลายทางจะมีสภาพแวดล้อมแบบไหน
+
+- **Portability:** แอปที่อยู่ในคอนเทนเนอร์จะทำงานเหมือนกันไม่ว่าจะรันในเครื่องนักพัฒนา (Development), เครื่องทดสอบ (Staging) หรือระบบจริง (Production)
+
+- **Isolation:** คอนเทนเนอร์แต่ละตัวทำงานแยกจากกัน ทำให้ไม่มีผลกระทบต่อกัน และลดปัญหาเรื่องการชนกันของ dependency หรือ configuration
+
+- **Scalability:** เมื่อต้องรองรับผู้ใช้มากขึ้น สามารถเพิ่มจำนวนคอนเทนเนอร์ได้อย่างรวดเร็ว เพื่อกระจายโหลดและเพิ่มประสิทธิภาพของระบบ
+
+- **CI/CD:** ช่วยให้นักพัฒนาสามารถสร้าง ทดสอบ และส่งมอบแอปพลิเคชันได้เร็วขึ้นและมีความน่าเชื่อถือมากขึ้น
+
+## แพลตฟอร์มที่รองรับ
+
+- CentOS
+
+- Debian
+
+- Fedora
+
+- Rasberry Pi OS (32-bit)
+
+- RHEL
+
+- SLES
+
+- Ubuntu
+
+- Binaries
+
+> reference: https://docs.docker.com/engine/install/
+
+## ขั้นตอนการติดตั้ง
+
+<Steps>
+
+### อัปเดตระบบ
+
+    ```bash
+    sudo apt-get update
+    sudo apt-get upgrade
+    ```
+
+### เพิ่ม repository
+
+คัดลอกข้อความด้านล่างและวางใน Terminal ของคุณ จากนั้นกดปุ่ม `Enter`
+
+```bash
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+```
+
+### ติดตั้ง Docker
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+### ทดสอบการทำงาน
+
+ทดลองรันคอนเทนเนอร์ `hello-world` ของ Docker เพื่อตรวจสอบว่าการติดตั้งสำเร็จหรือไม่
+
+```bash
+sudo docker run hello-world
+```
+
+หากเห็นข้อความแสดงความยินดีจาก Docker ใน Terminal แสดงว่าการติดตั้งของคุณสมบูรณ์
+
+</Steps>
