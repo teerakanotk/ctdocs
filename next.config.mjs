@@ -1,4 +1,11 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import nextra from "nextra";
 
-export default nextConfig;
+const withNextra = nextra({
+  // ... Add Nextra-specific options here
+  search: { codeblocks: false },
+  contentDirBasePath: "/docs",
+});
+
+export default withNextra({
+  // ... Add regular Next.js options here
+});
