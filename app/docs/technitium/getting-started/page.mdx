@@ -2,4 +2,75 @@
 title: Getting Started
 ---
 
-# Getting Started
+import { Steps } from 'nextra/components'
+
+# Technitium DNS
+
+DNS Server แบบโอเพนซอร์สที่มาพร้อมกับ Web-based Dashboard ช่วยให้คุณจัดการระบบ DNS ได้ง่ายดาย ไม่ว่าจะเป็นการทำหน้าที่เป็น Authoritative DNS สำหรับจัดการโซน DNS ของตัวเอง หรือ Recursive Resolver เพื่อสอบถาม DNS จากเซิร์ฟเวอร์ภายนอก
+
+## ฟีเจอร์
+
+- **Web-based Dashboard**: จัดการ DNS Server ได้อย่างง่ายดายผ่านเว็บอินเตอร์เฟส
+
+- **Authoritative DNS**: รองรับการจัดการโซน DNS ของตัวเอง
+
+- **Recursive Resolver**: สามารถทำหน้าที่เป็น DNS Resolver เพื่อสอบถามข้อมูลจากเซิร์ฟเวอร์ภายนอก
+
+- **DHCP Server**: รองรับการทำงานเป็น DHCP Server เพื่อจัดการ IP Address ให้กับอุปกรณ์ในเครือข่าย
+
+## ขั้นตอนการติดตั้งและการตั้งค่าเบื้องต้น
+
+<Steps>
+
+### อัปเดต
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
+
+### ติดตั้ง Dependencies
+
+```bash
+sudo apt install -y curl
+```
+
+### ติดตั้ง Technitium DNS
+
+```bash
+curl -sSL https://download.technitium.com/dns/install.sh | sudo bash
+```
+
+### ล็อกอินเข้าสู่ Dashboard
+
+เปิดเว็บเบราว์เซอร์และไปที่ [http://localhost:5380](http://localhost:5380) เพื่อเข้าถึง Dashboard ของ Technitium DNS
+
+> เปลี่ยน localhost เป็น IP Address ของเซิร์ฟเวอร์ของคุณ
+
+### ตั้งค่ารหัสผ่านสำหรับผู้ดูแลระบบ
+
+เมื่อเข้าสู่ Dashboard ครั้งแรก คุณจะต้องตั้งรหัสผ่านสำหรับผู้ดูแลระบบ
+
+![technitium-install-1](/img/technitium-install-1.png)
+
+### ไปที่เมนู Settings
+
+- แท็บ General
+    
+    - DNS Server Name: ตั้งชื่อสำหรับ DNS Server ของคุณ (FQDN)
+
+        ![technitium-install-2](/img/technitium-install-2.png)
+
+    - Zone Defaults: คลิกเลือก "Use SOA Serial Date Scheme"
+
+        ![technitium-install-3](/img/technitium-install-3.png)
+
+- แท็บ Web Service
+
+    - HTTPS Options: คลิกเลือกตามภาพด้านล่าง
+
+        ![technitium-install-4](/img/technitium-install-4.png)
+
+- เลื่อนลงมาที่ด้านล่างสุดของหน้า แล้วคลิก "Save Settings"
+
+</Steps>
