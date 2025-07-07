@@ -2,4 +2,119 @@
 title: Getting Started
 ---
 
-# Getting Started
+import { Steps } from "nextra/components";
+
+# Nginx Proxy Manager
+
+เครื่องมือจัดการ reverse proxy ที่สร้างขึ้นบนพื้นฐานของ Nginx โดยมีอินเทอร์เฟซแบบ Web GUI ที่ใช้งานง่าย ช่วยให้ผู้ใช้สามารถตั้งค่า reverse proxy, SSL certificates (เช่น Let's Encrypt), redirection, และ access control ได้สะดวก โดยไม่ต้องแก้ไขไฟล์ config ด้วยตนเอง
+
+## ความต้องการของระบบ
+
+- Docker
+
+- Docker compose
+
+หากคุณไม่ได้ติดตั้ง Docker สามารถดูวิธีติดตั้งได้ [ที่นี่](/docs/docker)
+
+## ขั้นตอนการติดตั้ง
+
+<Steps>
+
+### สร้างโฟลเดอร์สำหรับเก็บไฟล์
+
+```bash
+mkdir nginxproxymanager
+cd nginxproxymanager
+```
+
+### สร้างไฟล์ docker-compose.yml
+
+```bash
+sudo nano docker-compose.yml
+```
+
+คัดลอกข้อความด้านล่างนี้ แล้วนำไปวางในไฟล์ `docker-compose.yml` ที่คุณเพิ่งสร้างขึ้นภายในโฟลเดอร์ `nginxproxymanager`
+
+```bash filename="~/nginxproxymanager/docker-compose.yml"
+services:
+  app:
+    image: jc21/nginxproxymanager:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 81:81
+      - 443:443
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+```
+
+### บันทึกไฟล์
+
+กด `CTRL + X` เพื่อออกจากโปรแกรม จากนั้นกด `Y` เพื่อบันทึกการเปลี่ยนแปลง และกด `Enter` เพื่อยืนยันชื่อไฟล์
+
+### รัน Docker Compose
+
+หลังจากที่คุณได้สร้างไฟล์ `docker-compose.yml` แล้ว ให้รันคำสั่งด้านล่างเพื่อเริ่มต้น Nginx Proxy Manager
+
+```bash
+sudo docker compose up -d
+```
+
+คุณจะเห็นผลลัพธ์คล้ายกับตัวอย่างด้านล่าง ซึ่งแสดงว่า Container กำลังถูกดาวน์โหลดและเริ่มต้น
+
+```bash
+[+] Running 36/36
+ ✔ app Pulled                                                                     27.7s
+[+] Running 2/2
+ ✔ Network nginxproxymanager_default  Create...                                     0.1s
+ ✔ Container nginxproxymanager-app-1  Start...                                     0.5s
+```
+
+### ตรวจสอบสถานะของ Container
+
+คุณสามารถตรวจสอบสถานะการทำงานของ Container ได้ด้วยคำสั่ง
+
+```bash
+docker ps
+```
+
+หาก Nginx Proxy Manager ทำงานอยู่ คุณจะเห็นผลลัพธ์คล้ายกับตัวอย่างนี้
+
+```bash
+CONTAINER ID   IMAGE                             COMMAND   CREATED          STATUS          PORTS                                                                                      NAMES
+43b95c3e170a   jc21/nginxproxymanager:latest   "/init"   40 seconds ago   Up 39 seconds   0.0.0.0:80-81->80-81/tcp, [::]:80-81->80-81/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   nginxproxymanager-app-1
+```
+
+</Steps>
+
+## ล็อกอินและตั้งค่า Nginx Proxy Manager ครั้งแรก
+
+1. เปิดเว็บเบราว์เซอร์และไปที่
+
+    ```plaintext
+    http://ip_address:81
+    ```
+
+    ![nginxproxymanager-install-1](/img/nginxproxymanager-install-1.png)
+
+
+2. ใช้ข้อมูลผู้ใช้และรหัสผ่านเริ่มต้นเพื่อล็อกอิน
+
+    - Email address: admin@example.com
+    - Password: changeme
+
+3. หลังจากล็อกอินสำเร็จ ระบบจะบังคับให้คุณเปลี่ยนอีเมลและรหัสผ่านเพื่อความปลอดภัย
+
+    3.1 เปลี่ยนอีเมล
+
+        ![nginxproxymanager-install-2](/img/nginxproxymanager-install-2.png)
+
+    3.2 เปลี่ยนรหัสผ่าน
+
+        ![nginxproxymanager-install-3](/img/nginxproxymanager-install-3.png)
+
+
+4. เสร็จสิ้น
+
+    ![nginxproxymanager-install-4](/img/nginxproxymanager-install-4.png)
