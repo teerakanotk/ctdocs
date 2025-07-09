@@ -29,7 +29,6 @@ export default {
         items: {
           "getting-started": "",
           dns: "",
-          zone: "",
           record: "",
           dhcp: "",
         },
