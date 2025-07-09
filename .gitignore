@@ -39,9 +39,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# pagefind
-_pagefind/
-
-# scripts
-script/*.bat
