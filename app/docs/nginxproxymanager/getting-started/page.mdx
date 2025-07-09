@@ -39,7 +39,8 @@ sudo nano docker-compose.yml
 ```bash filename="~/nginxproxymanager/docker-compose.yml"
 services:
   app:
-    image: jc21/nginxproxymanager:latest
+    container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:latest
     restart: unless-stopped
     ports:
       - 80:80
@@ -91,7 +92,7 @@ CONTAINER ID   IMAGE                             COMMAND   CREATED          STAT
 
 ## ล็อกอินและตั้งค่า Nginx Proxy Manager ครั้งแรก
 
-1. เปิดเว็บเบราว์เซอร์และไปที่
+1.  เปิดเว็บเบราว์เซอร์และไปที่
 
     ```plaintext
     http://ip_address:81
@@ -99,13 +100,12 @@ CONTAINER ID   IMAGE                             COMMAND   CREATED          STAT
 
     ![nginxproxymanager-install-1](/img/nginxproxymanager-install-1.png)
 
-
-2. ใช้ข้อมูลผู้ใช้และรหัสผ่านเริ่มต้นเพื่อล็อกอิน
+2.  ใช้ข้อมูลผู้ใช้และรหัสผ่านเริ่มต้นเพื่อล็อกอิน
 
     - Email address: admin@example.com
     - Password: changeme
 
-3. หลังจากล็อกอินสำเร็จ ระบบจะบังคับให้คุณเปลี่ยนอีเมลและรหัสผ่านเพื่อความปลอดภัย
+3.  หลังจากล็อกอินสำเร็จ ระบบจะบังคับให้คุณเปลี่ยนอีเมลและรหัสผ่านเพื่อความปลอดภัย
 
     3.1 เปลี่ยนอีเมล
 
@@ -115,7 +115,6 @@ CONTAINER ID   IMAGE                             COMMAND   CREATED          STAT
 
         ![nginxproxymanager-install-3](/img/nginxproxymanager-install-3.png)
 
-
-4. เสร็จสิ้น
+4.  เสร็จสิ้น
 
     ![nginxproxymanager-install-4](/img/nginxproxymanager-install-4.png)
