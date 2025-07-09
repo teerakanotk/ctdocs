@@ -3,6 +3,7 @@ import nextra from "nextra";
 const withNextra = nextra({
   // ... Add Nextra-specific options here
   search: { codeblocks: false },
+  defaultShowCopyCode: true,
   contentDirBasePath: "/docs",
 });
 
