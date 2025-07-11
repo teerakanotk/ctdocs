@@ -25,7 +25,7 @@ export default async function RootLayout({ children }) {
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}
-          docsRepositoryBase="https://github.com/teerakanotk/ctdocs/tree/main/docs"
+          docsRepositoryBase="https://github.com/teerakanotk/ctdocs/tree/main"
           footer={footer}
           sidebar={{ toggleButton: false }}
           search={false}
