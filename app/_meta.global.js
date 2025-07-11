@@ -21,7 +21,7 @@ export default {
         items: {
           "getting-started": "",
           repository: "",
-          lxc: "",
+          container: "",
         },
       },
       technitium: {
