@@ -7,7 +7,26 @@ import { Steps } from "nextra/components";
 
 # Nginx Proxy Manager
 
-เครื่องมือจัดการ reverse proxy ที่สร้างขึ้นบนพื้นฐานของ Nginx โดยมีอินเทอร์เฟซแบบ Web GUI ที่ใช้งานง่าย ช่วยให้ผู้ใช้สามารถตั้งค่า reverse proxy, SSL certificates (เช่น Let's Encrypt), redirection, และ access control ได้สะดวก โดยไม่ต้องแก้ไขไฟล์ config ด้วยตนเอง
+เครื่องมือโอเพนซอร์สที่ออกแบบมาเพื่อช่วยจัดการและกำหนดค่า reverse proxy โดยใช้ Nginx ผ่านอินเทอร์เฟซเว็บที่ใช้งานง่าย โดยไม่จำเป็นต้องมีความรู้เชิงลึกเกี่ยวกับการกำหนดค่า Nginx ด้วยตนเอง NPM ถูกพัฒนาขึ้นในรูปแบบ Docker container ทำให้ติดตั้งและใช้งานได้ง่าย เหมาะสำหรับทั้งผู้ใช้ทั่วไปและผู้ดูแลระบบที่ต้องการจัดการการเข้าถึงบริการเว็บหรือแอปพลิเคชันภายในเครือข่าย เช่น การโฮสต์ที่บ้านหรือในธุรกิจขนาดเล็ก
+
+## Reverse Proxy คืออะไร?
+
+Reverse proxy คือเซิร์ฟเวอร์ที่ทำหน้าที่เป็นตัวกลางระหว่างผู้ใช้ (client) และเซิร์ฟเวอร์ภายใน (backend servers) โดยรับคำขอจากผู้ใช้และส่งต่อไปยังเซิร์ฟเวอร์ที่เหมาะสม จากนั้นส่งคำตอบกลับไปยังผู้ใช้ การใช้ reverse proxy ช่วยเพิ่มความปลอดภัย ประสิทธิภาพ และความสามารถในการขยายระบบ (scalability) ได้ดังนี้:
+
+- ความปลอดภัย: ปกป้องเซิร์ฟเวอร์ภายในโดยซ่อนที่อยู่ IP และใช้ SSL/TLS เพื่อเข้ารหัสการรับส่งข้อมูล
+- การกระจายโหลด (Load Balancing): แบ่งการรับส่งข้อมูลไปยังเซิร์ฟเวอร์หลายเครื่องเพื่อป้องกันการทำงานหนักเกินไป
+- การจัดการทราฟฟิก: สามารถกำหนดเส้นทางการรับส่งข้อมูลตาม URL หรือโปรโตคอล และแคชเนื้อหาเพื่อเพิ่มความเร็ว
+- การเข้ารหัส SSL: ทำให้สามารถใช้งาน HTTPS ได้ง่ายขึ้นด้วยการจัดการใบรับรอง SSL
+
+## คุณสมบัติหลัก
+
+- มี GUI ที่ช่วยให้ผู้ใช้สามารถตั้งค่า proxy host, redirection, และ SSL ได้โดยไม่ต้องเขียนโค้ด Nginx ด้วยตนเอง
+- รองรับการขอและต่ออายุใบรับรอง SSL ฟรีโดยอัตโนมัติ หรือสามารถใช้ใบรับรองที่กำหนดเองได้
+- รองรับ HTTP, HTTPS, TCP, และ UDP รวมถึงการกำหนดค่า stream host สำหรับการส่งต่อพอร์ต
+- รองรับหลายบัญชีผู้ใช้ การกำหนดบทบาท และการบันทึก log การเปลี่ยนแปลงเพื่อความปลอดภัยและการตรวจสอบ
+- การทำ Load Balancing: สามารถกำหนดค่าเพื่อกระจายโหลดไปยังเซิร์ฟเวอร์หลายเครื่องในส่วนการตั้งค่าขั้นสูง
+- ทำงานได้ดีในสภาพแวดล้อม Docker โดยสามารถเชื่อมต่อกับ container อื่นๆ ผ่าน Docker network เพื่อความปลอดภัยและประสิทธิภาพ
+- มีตัวเลือก “Block Common Exploits” เพื่อป้องกันการโจมตีทางไซเบอร์ทั่วไป
 
 ## ความต้องการของระบบ
 
@@ -17,7 +36,7 @@ import { Steps } from "nextra/components";
 
 หากคุณไม่ได้ติดตั้ง Docker สามารถดูวิธีติดตั้งได้ [ที่นี่](/docs/docker)
 
-## ขั้นตอนการติดตั้ง
+## การติดตั้ง
 
 <Steps>
 
@@ -36,7 +55,7 @@ sudo nano docker-compose.yml
 
 คัดลอกข้อความด้านล่างนี้ แล้วนำไปวางในไฟล์ `docker-compose.yml` ที่คุณเพิ่งสร้างขึ้นภายในโฟลเดอร์ `nginxproxymanager`
 
-```bash filename="~/nginxproxymanager/docker-compose.yml"
+```yml filename="~/nginxproxymanager/docker-compose.yml"
 services:
   app:
     container_name: nginx-proxy-manager
@@ -52,8 +71,6 @@ services:
 ```
 
 ### บันทึกไฟล์
-
-กด `CTRL + X` เพื่อออกจากโปรแกรม จากนั้นกด `Y` เพื่อบันทึกการเปลี่ยนแปลง และกด `Enter` เพื่อยืนยันชื่อไฟล์
 
 ### รัน Docker Compose
 
@@ -85,25 +102,21 @@ docker ps
 
 ```bash
 CONTAINER ID   IMAGE                             COMMAND   CREATED          STATUS          PORTS                                                                                      NAMES
-43b95c3e170a   jc21/nginxproxymanager:latest   "/init"   40 seconds ago   Up 39 seconds   0.0.0.0:80-81->80-81/tcp, [::]:80-81->80-81/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   nginxproxymanager-app-1
+43b95c3e170a   jc21/nginx-proxy-manager:latest   "/init"   40 seconds ago   Up 39 seconds   0.0.0.0:80-81->80-81/tcp, [::]:80-81->80-81/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   nginxproxymanager-app-1
 ```
 
 </Steps>
 
-## ล็อกอินและตั้งค่า Nginx Proxy Manager ครั้งแรก
+## เริ่มต้นใช้งาน Nginx Proxy Manager
 
-1.  เปิดเว็บเบราว์เซอร์และไปที่
+1. เปิดเว็บเบราว์เซอร์และไปที่ `http://ip_address:81`
 
-    ```plaintext
-    http://ip_address:81
-    ```
-
-    ![nginxproxymanager-install-1](/img/nginxproxymanager-install-1.png)
-
-2.  ใช้ข้อมูลผู้ใช้และรหัสผ่านเริ่มต้นเพื่อล็อกอิน
+2. ชื่อผู้ใช้และรหัสผ่านเริ่มต้นสำหรับล็อกอินครั้งแรก
 
     - Email address: admin@example.com
     - Password: changeme
+
+    ![nginxproxymanager-install-1](/img/nginxproxymanager-install-1.png)
 
 3.  หลังจากล็อกอินสำเร็จ ระบบจะบังคับให้คุณเปลี่ยนอีเมลและรหัสผ่านเพื่อความปลอดภัย
 
