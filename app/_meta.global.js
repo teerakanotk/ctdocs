@@ -17,7 +17,7 @@ export default {
         },
       },
       proxmox: {
-        title: "Proxmox VE",
+        title: "Proxmox",
         items: {
           "getting-started": "",
           repository: "",
@@ -33,7 +33,7 @@ export default {
           dhcp: "",
         },
       },
-      nginxproxymanager: {
+      "nginx-proxy-manager": {
         title: "Nginx Proxy Manager",
         items: {
           "getting-started": "",
