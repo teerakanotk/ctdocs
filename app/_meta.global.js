@@ -25,7 +25,7 @@ export default {
         },
       },
       technitium: {
-        title: "Technitium DNS",
+        title: "Technitium",
         items: {
           "getting-started": "",
           dns: "",
