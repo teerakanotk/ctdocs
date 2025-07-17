@@ -1,6 +1,5 @@
 ---
-title: Proxmox Container
-sidebarTitle: Container
+title: LXC
 ---
 
 import { Steps } from "nextra/components";
@@ -26,17 +25,17 @@ import { Steps } from "nextra/components";
 
 2. ไปที่เมนู **Datacenter** > **Nodes** ที่คุณต้องการเก็บเทมเพลต > **local** > **CT Templates**
 
-   ![lxc-template-1](/img/proxmox-lxc-template-1.png)
+   ![lxc-template-1](/img/proxmox/lxc-template-1.png)
 
 3. คลิกที่ปุ่ม **Templates** ที่ด้านบนของหน้า
 
 4. เลือกเทมเพลตที่ต้องการ แล้วคลิกปุ่ม **Download**
 
-   ![lxc-template-2](/img/proxmox-lxc-template-2.png)
+   ![lxc-template-2](/img/proxmox/lxc-template-2.png)
 
 5. เมื่อดาวน์โหลดสำเร็จ คุณจะเห็นเทมเพลตในรายการเทมเพลตของคุณ
 
-   ![lxc-template-3](/img/proxmox-lxc-template-3.png)
+   ![lxc-template-3](/img/proxmox/lxc-template-3.png)
 
 ## ขั้นตอนการสร้าง LXC Container
 
@@ -54,7 +53,7 @@ import { Steps } from "nextra/components";
 
 คลิกที่ปุ่ม **Create CT** ที่ด้านบนของหน้า
 
-![lxc-create-1](/img/proxmox-lxc-create-1.png)
+![lxc-create-1](/img/proxmox/lxc-create-1.png)
 
 ### กรอกข้อมูลพื้นฐาน
 
@@ -68,7 +67,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-  ![lxc-create-2](/img/proxmox-lxc-create-2.png)
+  ![lxc-create-2](/img/proxmox/lxc-create-2.png)
 
 ### เลือกเทมเพลต
 
@@ -76,7 +75,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-![lxc-create-3](/img/proxmox-lxc-create-3.png)
+![lxc-create-3](/img/proxmox/lxc-create-3.png)
 
 ### กำหนดขนาดพื้นที่เก็บข้อมูล
 
@@ -84,7 +83,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-  ![lxc-create-4](/img/proxmox-lxc-create-4.png)
+  ![lxc-create-4](/img/proxmox/lxc-create-4.png)
 
 ### กำหนดจำนวน CPU
 
@@ -92,7 +91,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-  ![lxc-create-5](/img/proxmox-lxc-create-5.png)
+  ![lxc-create-5](/img/proxmox/lxc-create-5.png)
 
 ### กำหนด RAM
 
@@ -102,7 +101,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-![lxc-create-6](/img/proxmox-lxc-create-6.png)
+![lxc-create-6](/img/proxmox/lxc-create-6.png)
 
 ### กำหนดเครือข่าย
 
@@ -114,7 +113,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-  ![lxc-create-7](/img/proxmox-lxc-create-7.png)
+  ![lxc-create-7](/img/proxmox/lxc-create-7.png)
 
 ### กำหนด DNS
 
@@ -124,7 +123,7 @@ import { Steps } from "nextra/components";
 
 - คลิก **Next** เพื่อไปยังขั้นตอนถัดไป
 
-  ![lxc-create-8](/img/proxmox-lxc-create-8.png)
+  ![lxc-create-8](/img/proxmox/lxc-create-8.png)
 
 ### ตรวจสอบและสร้าง Container
 
@@ -132,12 +131,12 @@ import { Steps } from "nextra/components";
 
 - หากทุกอย่างถูกต้อง คลิกที่ปุ่ม **Finish** เพื่อสร้าง LXC Container
 
-  ![lxc-create-9](/img/proxmox-lxc-create-9.png)
+  ![lxc-create-9](/img/proxmox/lxc-create-9.png)
 
 ### รอการสร้าง Container เสร็จสมบูรณ์
 
 - รอจนกว่าการสร้าง Container จะเสร็จสมบูรณ์ คุณจะเห็นสถานะเป็น **Task OK** ในหน้าจอ
 
-  ![lxc-create-10](/img/proxmox-lxc-create-10.png)
+  ![lxc-create-10](/img/proxmox/lxc-create-10.png)
 
 </Steps>

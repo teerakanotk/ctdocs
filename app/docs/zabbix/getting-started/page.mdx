@@ -43,7 +43,7 @@ sudo apt install -y wget curl gnupg
 ### ติดตั้ง Zabbix Repository
 
 ```bash
-wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix/release/zabbix/release_latest_7.0+ubuntu24.04_all.deb
 sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
 sudo apt update
 ```
@@ -70,7 +70,7 @@ sudo -u postgres createdb -O zabbix zabbix
 ### นำเข้าข้อมูลเริ่มต้น
 
 ```bash
-zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
+zcat /usr/share/zabbix/sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
 ```
 
 ### แก้ไขไฟล์คอนฟิก Zabbix Server
@@ -124,32 +124,32 @@ http://<ip_address>
 
 - ไปที่ `http://<ip_address>/` จะพบหน้าจอการติดตั้ง Zabbix จากนั้นคลิกที่ปุ่ม Next step
 
-    ![zabbix-install-1](/img/zabbix-install-1.png)
+    ![install-1](/img/zabbix/install-1.png)
 
 - ตรวจสอบความพร้อมของระบบ และคลิกที่ปุ่ม Next step
 
-    ![zabbix-install-2](/img/zabbix-install-2.png)
+    ![install-2](/img/zabbix/install-2.png)
 
 - ป้อนรหัสผ่านฐานข้อมูลที่คุณตั้งไว้สำหรับชื่อผู้ใช้ zabbix แล้วคลิก Next step
 
-    ![zabbix-install-3](/img/zabbix-install-3.png)
+    ![install-3](/img/zabbix/install-3.png)
 
 - ตั้งค่า Timezone และคลิกที่ปุ่ม Next step
 
-    ![zabbix-install-4](/img/zabbix-install-4.png)
+    ![install-4](/img/zabbix/install-4.png)
 
 - คลิก Next step
 
-    ![zabbix-install-5](/img/zabbix-install-5.png)
+    ![install-5](/img/zabbix/install-5.png)
 
 - ตั้งค่าเสร็จสิ้น คลิกที่ปุ่ม Finish
 
-    ![zabbix-install-6](/img/zabbix-install-6.png)
+    ![install-6](/img/zabbix/install-6.png)
 
 - เข้าสู่ระบบด้วยชื่อผู้ใช้ `Admin` และรหัสผ่าน `zabbix`
 
-    ![zabbix-install-7](/img/zabbix-install-7.png)
+    ![install-7](/img/zabbix/install-7.png)
 
 - เมื่อเข้าสู่ระบบแล้ว คุณจะเห็นหน้าแดชบอร์ดของ Zabbix
 
-    ![zabbix-install-8](/img/zabbix-install-8.png)
+    ![install-8](/img/zabbix/install-8.png)

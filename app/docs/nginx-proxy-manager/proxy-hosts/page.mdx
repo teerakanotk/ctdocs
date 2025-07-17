@@ -1,0 +1,83 @@
+---
+title: Proxy Hosts
+sidebarTitle: Proxy Hosts
+---
+
+# Proxy Hosts
+
+ใน Nginx Proxy Manager เมนู **Proxy Hosts** คือจุดศูนย์กลางสำหรับการตั้งค่า Reverse Proxy โดยคุณสามารถชี้โดเมนมายังเซิร์ฟเวอร์หรือบริการภายในระบบของคุณได้อย่างง่ายดาย ผ่านหน้าเว็บ ไม่ต้องแก้ไฟล์คอนฟิกของ Nginx ด้วยตนเอง
+
+## Reverse Proxy คืออะไร
+
+Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่อยู่หน้าเว็บเซิร์ฟเวอร์หรือแอปพลิเคชันจริง โดยจะรับคำขอจากไคลเอนต์ (ผู้ใช้งาน) แล้วส่งต่อไปยังเซิร์ฟเวอร์ปลายทางที่เหมาะสม จากนั้นจึงส่งผลลัพธ์กลับมาหาผู้ใช้งาน
+
+ผู้ใช้งานจะไม่รู้ว่าเบื้องหลังคำขอนั้นมีหลายระบบหรือหลายบริการ เพราะทุกคำขอถูกจัดการโดย Reverse Proxy
+
+## ประโยชน์ของ Reverse Proxy
+
+- ซ่อน IP Address ของเซิร์ฟเวอร์จริง
+- ป้องกันการโจมตี เช่น DDoS, XSS, SQL Injection
+- จัดการ SSL/TLS ในจุดเดียว
+- รองรับการทำ Load Balancing
+- แคชข้อมูลเพื่อลดภาระของ backend
+- โฮสต์หลายบริการ/แอปพลิเคชันด้วย IP เดียว
+- ลดการเปิดเผยพอร์ตของ backend
+- เขียน URL ใหม่ก่อนส่งคำขอ
+- บำรุงรักษาระบบได้โดยไม่กระทบผู้ใช้งาน
+
+## ตัวอย่างการใช้งาน
+
+หากคุณมีแอปพลิเคชัน 3 ตัวที่รันอยู่ในเครื่องเดียวกัน ดังนี้:
+
+- `http://localhost:3000` (Node.js)
+- `http://localhost:5000` (Flask)
+- `http://localhost:8000` (Apache PHP)
+
+และต้องการให้เข้าถึงผ่านโดเมนที่แตกต่างกัน:
+
+- `app-a.example.com` → `http://localhost:3000`
+- `app-b.example.com` → `http://localhost:5000`
+- `app-c.example.com` → `http://localhost:8000`
+
+Nginx Proxy Manager ช่วยให้คุณสามารถตั้งค่า Proxy Host ให้แต่ละโดเมนชี้ไปยังบริการที่ถูกต้องได้ง่าย พร้อมขอ SSL ให้แต่ละโดเมนอัตโนมัติ
+
+## การตั้งค่า Proxy Host ด้วย Nginx Proxy Manager
+
+1. เข้าสู่ระบบ Nginx Proxy Manager
+2. ไปที่เมนู **Proxy Hosts**
+3. คลิกปุ่ม **Add Proxy Host**
+
+จะพบแบบฟอร์มตั้งค่าที่แบ่งเป็น 3 ส่วนหลัก
+
+### 1. แท็บ Details
+
+| ช่อง | รายละเอียด |
+|------|------------|
+| **Domain Names** | ชื่อโดเมน เช่น `app.example.com` (สามารถใส่ได้มากกว่า 1) |
+| **Scheme** | เลือก `http` หรือ `https` ตาม backend ของคุณ |
+| **Forward Hostname / IP** | IP address หรือชื่อโฮสต์ของ backend เช่น `localhost`, `192.168.1.10` |
+| **Forward Port** | พอร์ตของ backend เช่น `3000` |
+| **Block Common Exploits** | ตัวเลือกสำหรับป้องกันการโจมตีที่พบบ่อย |
+| **Websockets Support** | เปิดหาก backend ใช้ WebSocket |
+| **Access List** | เลือก Access List หากต้องการจำกัดการเข้าถึง |
+
+### 2. แท็บ SSL
+
+| ตัวเลือก | ความหมาย |
+|----------|-----------|
+| **Request a new SSL Certificate** | ขอใบรับรอง SSL จาก Let's Encrypt |
+| **Force SSL** | บังคับ redirect จาก HTTP ไป HTTPS |
+| **HTTP/2 Support** | เปิดการใช้งาน HTTP/2 |
+| **HSTS Enabled** | เพิ่ม HTTP Strict Transport Security |
+| **HSTS Subdomains** | บังคับ HSTS ไปยัง subdomain ด้วย |
+| **DNS Challenge** | ใช้สำหรับขอใบรับรองผ่าน DNS (ในบางกรณีที่ไม่สามารถเปิดพอร์ตได้) |
+
+> หมายเหตุ: ก่อนขอ SSL โดเมนของคุณต้องชี้ DNS มาที่ IP ของเครื่องที่รัน Nginx Proxy Manager แล้ว
+
+### 3. แท็บ Advanced
+
+ใช้สำหรับใส่ custom configuration เช่น header เพิ่มเติม หรือ directive ของ Nginx เฉพาะทาง เช่น:
+
+```nginx
+add_header X-Frame-Options "SAMEORIGIN";
+```

@@ -7,44 +7,33 @@ import { Steps } from "nextra/components";
 
 # Nginx Proxy Manager
 
-เครื่องมือโอเพนซอร์สที่ออกแบบมาเพื่อช่วยจัดการและกำหนดค่า reverse proxy โดยใช้ Nginx ผ่านอินเทอร์เฟซเว็บที่ใช้งานง่าย โดยไม่จำเป็นต้องมีความรู้เชิงลึกเกี่ยวกับการกำหนดค่า Nginx ด้วยตนเอง NPM ถูกพัฒนาขึ้นในรูปแบบ Docker container ทำให้ติดตั้งและใช้งานได้ง่าย เหมาะสำหรับทั้งผู้ใช้ทั่วไปและผู้ดูแลระบบที่ต้องการจัดการการเข้าถึงบริการเว็บหรือแอปพลิเคชันภายในเครือข่าย เช่น การโฮสต์ที่บ้านหรือในธุรกิจขนาดเล็ก
+เครื่องมือโอเพนซอร์สที่ช่วยให้คุณสามารถจัดการ **Reverse Proxy** ได้ง่ายผ่าน **Web GUI** โดยไม่ต้องเขียนไฟล์ config ของ Nginx ด้วยตนเอง รองรับการตั้งค่า SSL แบบ Let's Encrypt, การจัดการโดเมน, Redirect, และอื่น ๆ
 
-## Reverse Proxy คืออะไร?
+## Reverse Proxy คืออะไร
 
-Reverse proxy คือเซิร์ฟเวอร์ที่ทำหน้าที่เป็นตัวกลางระหว่างผู้ใช้ (client) และเซิร์ฟเวอร์ภายใน (backend servers) โดยรับคำขอจากผู้ใช้และส่งต่อไปยังเซิร์ฟเวอร์ที่เหมาะสม จากนั้นส่งคำตอบกลับไปยังผู้ใช้ การใช้ reverse proxy ช่วยเพิ่มความปลอดภัย ประสิทธิภาพ และความสามารถในการขยายระบบ (scalability) ได้ดังนี้:
+Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่รับคำขอ (Request) จากผู้ใช้งาน แล้วส่งต่อไปยังเซิร์ฟเวอร์ปลายทาง (Backend) จากนั้นจะรับผลลัพธ์กลับมาและส่งให้ผู้ใช้งานอีกที โดยที่ผู้ใช้งานไม่ทราบว่าเบื้องหลังมีเซิร์ฟเวอร์หลายตัวอยู่
 
-- ความปลอดภัย: ปกป้องเซิร์ฟเวอร์ภายในโดยซ่อนที่อยู่ IP และใช้ SSL/TLS เพื่อเข้ารหัสการรับส่งข้อมูล
-- การกระจายโหลด (Load Balancing): แบ่งการรับส่งข้อมูลไปยังเซิร์ฟเวอร์หลายเครื่องเพื่อป้องกันการทำงานหนักเกินไป
-- การจัดการทราฟฟิก: สามารถกำหนดเส้นทางการรับส่งข้อมูลตาม URL หรือโปรโตคอล และแคชเนื้อหาเพื่อเพิ่มความเร็ว
-- การเข้ารหัส SSL: ทำให้สามารถใช้งาน HTTPS ได้ง่ายขึ้นด้วยการจัดการใบรับรอง SSL
+ตัวอย่างที่พบบ่อย เช่น:
+- `example.com` → ส่งไปยัง web server
+- `api.example.com` → ส่งไปยัง API server
+- `admin.example.com` → ส่งไปยังหน้า dashboard
 
-## คุณสมบัติหลัก
+## ความต้องการเบื้องต้น
 
-- มี GUI ที่ช่วยให้ผู้ใช้สามารถตั้งค่า proxy host, redirection, และ SSL ได้โดยไม่ต้องเขียนโค้ด Nginx ด้วยตนเอง
-- รองรับการขอและต่ออายุใบรับรอง SSL ฟรีโดยอัตโนมัติ หรือสามารถใช้ใบรับรองที่กำหนดเองได้
-- รองรับ HTTP, HTTPS, TCP, และ UDP รวมถึงการกำหนดค่า stream host สำหรับการส่งต่อพอร์ต
-- รองรับหลายบัญชีผู้ใช้ การกำหนดบทบาท และการบันทึก log การเปลี่ยนแปลงเพื่อความปลอดภัยและการตรวจสอบ
-- การทำ Load Balancing: สามารถกำหนดค่าเพื่อกระจายโหลดไปยังเซิร์ฟเวอร์หลายเครื่องในส่วนการตั้งค่าขั้นสูง
-- ทำงานได้ดีในสภาพแวดล้อม Docker โดยสามารถเชื่อมต่อกับ container อื่นๆ ผ่าน Docker network เพื่อความปลอดภัยและประสิทธิภาพ
-- มีตัวเลือก “Block Common Exploits” เพื่อป้องกันการโจมตีทางไซเบอร์ทั่วไป
+- ติดตั้ง Docker
+- ติดตั้ง Docker Compose
 
-## ความต้องการของระบบ
+> หากยังไม่ได้ติดตั้ง Docker สามารถดูวิธีติดตั้งได้ [ที่นี่](/docs/docker)
 
-- Docker
-
-- Docker compose
-
-หากคุณไม่ได้ติดตั้ง Docker สามารถดูวิธีติดตั้งได้ [ที่นี่](/docs/docker)
-
-## การติดตั้ง
+## ขั้นตอนการติดตั้ง
 
 <Steps>
 
-### สร้างโฟลเดอร์สำหรับเก็บไฟล์
+### สร้างโฟลเดอร์โปรเจกต์
 
 ```bash
-mkdir nginxproxymanager
-cd nginxproxymanager
+mkdir nginx-proxy-manager
+cd nginx-proxy-manager
 ```
 
 ### สร้างไฟล์ docker-compose.yml
@@ -53,9 +42,9 @@ cd nginxproxymanager
 sudo nano docker-compose.yml
 ```
 
-คัดลอกข้อความด้านล่างนี้ แล้วนำไปวางในไฟล์ `docker-compose.yml` ที่คุณเพิ่งสร้างขึ้นภายในโฟลเดอร์ `nginxproxymanager`
+จากนั้นวางเนื้อหาด้านล่าง:
 
-```yml filename="~/nginxproxymanager/docker-compose.yml"
+```bash filename="~/nginx-proxy-manager/docker-compose.yml"
 services:
   app:
     container_name: nginx-proxy-manager
@@ -70,64 +59,59 @@ services:
       - ./letsencrypt:/etc/letsencrypt
 ```
 
-### บันทึกไฟล์
-
-### รัน Docker Compose
-
-หลังจากที่คุณได้สร้างไฟล์ `docker-compose.yml` แล้ว ให้รันคำสั่งด้านล่างเพื่อเริ่มต้น Nginx Proxy Manager
+### รัน Nginx Proxy Manager
 
 ```bash
 sudo docker compose up -d
 ```
 
-คุณจะเห็นผลลัพธ์คล้ายกับตัวอย่างด้านล่าง ซึ่งแสดงว่า Container กำลังถูกดาวน์โหลดและเริ่มต้น
+Docker จะดาวน์โหลด image และเริ่มต้น container อัตโนมัติ
 
 ```bash
+root@npm:~/nginx-proxy-manager# sudo docker compose up -d
 [+] Running 36/36
- ✔ app Pulled                                                                     27.7s
+ ✔ app Pulled                                               49.0s 
 [+] Running 2/2
- ✔ Network nginxproxymanager_default  Create...                                     0.1s
- ✔ Container nginxproxymanager-app-1  Start...                                     0.5s
+ ✔ Network nginx-proxy-manager_default  Created             0.1s 
+ ✔ Container nginx-proxy-manager        Started             0.4s 
 ```
 
-### ตรวจสอบสถานะของ Container
-
-คุณสามารถตรวจสอบสถานะการทำงานของ Container ได้ด้วยคำสั่ง
+### ตรวจสอบสถานะ
 
 ```bash
-docker ps
+sudo docker ps
 ```
 
-หาก Nginx Proxy Manager ทำงานอยู่ คุณจะเห็นผลลัพธ์คล้ายกับตัวอย่างนี้
-
 ```bash
-CONTAINER ID   IMAGE                             COMMAND   CREATED          STATUS          PORTS                                                                                      NAMES
-43b95c3e170a   jc21/nginx-proxy-manager:latest   "/init"   40 seconds ago   Up 39 seconds   0.0.0.0:80-81->80-81/tcp, [::]:80-81->80-81/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   nginxproxymanager-app-1
+root@npm:~/nginx-proxy-manager# sudo docker ps
+CONTAINER ID   IMAGE                             COMMAND   CREATED         STATUS         PORTS                                                                                      NAMES
+1fcf72aaec1e   jc21/nginx-proxy-manager:latest   "/init"   2 minutes ago   Up 2 minutes   0.0.0.0:80-81->80-81/tcp, [::]:80-81->80-81/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   nginx-proxy-manager
 ```
 
 </Steps>
 
-## เริ่มต้นใช้งาน Nginx Proxy Manager
+## เริ่มต้นใช้งาน
 
-1. เปิดเว็บเบราว์เซอร์และไปที่ `http://ip_address:81`
+1. เปิดเบราว์เซอร์ และเข้าไปที่ `http://<IP_ADDRESS>:81`
+    > ตัวอย่างเช่น `http://192.168.1.100:81`
 
-2. ชื่อผู้ใช้และรหัสผ่านเริ่มต้นสำหรับล็อกอินครั้งแรก
+    ![install-1](/img/nginx-proxy-manager/install-1.png)
 
-    - Email address: admin@example.com
-    - Password: changeme
+2. ล็อกอินด้วยข้อมูลเริ่มต้น
 
-    ![nginxproxymanager-install-1](/img/nginxproxymanager-install-1.png)
+    - Email: `admin@example.com`
+    - Password: `changeme`
 
-3.  หลังจากล็อกอินสำเร็จ ระบบจะบังคับให้คุณเปลี่ยนอีเมลและรหัสผ่านเพื่อความปลอดภัย
+3. ระบบจะให้คุณเปลี่ยนข้อมูลบัญชี
 
-    3.1 เปลี่ยนอีเมล
+    - เปลี่ยนอีเมล
 
-        ![nginxproxymanager-install-2](/img/nginxproxymanager-install-2.png)
+        ![install-2](/img/nginx-proxy-manager/install-2.png)
 
-    3.2 เปลี่ยนรหัสผ่าน
+    - เปลี่ยนรหัสผ่าน
 
-        ![nginxproxymanager-install-3](/img/nginxproxymanager-install-3.png)
+        ![install-3](/img/nginx-proxy-manager/install-3.png)
 
-4.  เสร็จสิ้น
+4. เข้าสู่หน้าหลักของ Dashboard
 
-    ![nginxproxymanager-install-4](/img/nginxproxymanager-install-4.png)
+    ![install-4](/img/nginx-proxy-manager/install-4.png)
