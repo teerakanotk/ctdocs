@@ -7,7 +7,7 @@ export default {
     title: "Documentation",
     type: "page",
     items: {
-      hw6530e: {
+      "huawei-usg6530e": {
         title: "Huawei USG6530E",
         items: {
           "getting-started": "",
@@ -37,10 +37,11 @@ export default {
         title: "Nginx Proxy Manager",
         items: {
           "getting-started": "",
-          "reverse-proxy": "",
+          "proxy-hosts": "",
         },
       },
       docker: "",
+      zabbix: "",
     },
   },
 };
