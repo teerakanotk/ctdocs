@@ -1,0 +1,111 @@
+---
+title: Docker
+---
+
+import { Steps } from 'nextra/components'
+
+# Docker
+
+**Docker** คือแพลตฟอร์มสำหรับการพัฒนา จัดส่ง (delivery) และรันแอปพลิเคชันภายใน **Container** ซึ่งเป็นเทคโนโลยีที่ช่วยให้แอปสามารถทำงานได้ทุกที่ โดยไม่ขึ้นกับระบบปฏิบัติการหรือการติดตั้งซอฟต์แวร์ต่าง ๆ ล่วงหน้า
+
+Containers มีความคล้ายกับ Virtual Machines (VMs) แต่มีขนาดเล็กและใช้ทรัพยากรระบบน้อยกว่า
+
+## ความแตกต่างระหว่าง VM และ Container
+
+- **Virtual Machine (VM):** จำลองทั้งระบบปฏิบัติการ → หนัก, ใช้ทรัพยากรมาก
+- **Docker Container:** ใช้ kernel ของ OS หลักร่วมกัน → เบา, รันเร็ว, ใช้ทรัพยากรน้อย
+
+## ข้อดีของ Docker
+
+- ทำให้สภาพแวดล้อม Dev และ Prod เหมือนกัน
+- ประหยัดเวลาในการ deploy แอปพลิเคชัน
+- ทำงานร่วมกับ CI/CD ได้อย่างมีประสิทธิภาพ
+- เหมาะกับการพัฒนาแบบ microservices
+- ใช้งานได้ทั้งบน Linux, macOS และ Windows
+
+## ขั้นตอนการติดตั้ง Docker (บน Ubuntu)
+
+<Steps>
+
+### อัปเดตระบบ
+
+```bash
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+### ติดตั้งเครื่องมือพื้นฐานและเพิ่ม GPG key
+
+```bash
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+```
+
+### เพิ่ม Docker repository
+
+```bash
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+```
+
+### ติดตั้ง Docker Engine และ Plugins
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+### ทดสอบการติดตั้ง
+
+```bash
+sudo docker run hello-world
+```
+
+### ตัวอย่างผลลัพธ์
+
+```bash
+root@docker:~# sudo docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+e6590344b1a5: Pull complete 
+Digest: sha256:ec153840d1e635ac434fab5e377081f17e0e15afab27beb3f726c3265039cfff
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+```
+
+</Steps>
+
+## คำสั่งพื้นฐาน
+
+| Command                         | Description                      |
+| ------------------------------- | -------------------------------- |
+| `docker build -t <name> .`      | สร้าง image จาก Dockerfile        |
+| `docker run -p 8000:80 <image>` | รัน container                     |
+| `docker ps`                     | แสดง container ที่กำลังทำงานอยู่     |
+| `docker stop <id>`              | หยุด container                   |
+| `docker images`                 | แสดงรายการ image ที่มีอยู่           |

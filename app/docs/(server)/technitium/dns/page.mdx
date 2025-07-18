@@ -1,0 +1,192 @@
+---
+title: Technitium DNS Server
+sidebarTitle: DNS Server
+---
+
+# DNS Server
+
+DNS (Domain Name System) คือระบบที่ทำหน้าที่แปลงชื่อโดเมนที่เราใช้เรียกเว็บไซต์ (เช่น google.com) ให้กลายเป็น IP Address (เช่น 142.250.190.78) ซึ่งเป็นสิ่งที่คอมพิวเตอร์ใช้ในการติดต่อกัน
+
+**หน้าที่ของ DNS Server:**
+
+- แปลชื่อเว็บไซต์ (domain name) เป็น IP address
+
+- เก็บ cache ชั่วคราวเพื่อลดการค้นหาแบบซ้ำ
+
+- บาง DNS มีระบบกรองโฆษณาหรือเนื้อหาที่ไม่เหมาะสมได้ (เช่น Cloudflare Family DNS, AdGuard)
+
+## ตั้งค่า Proxy & Forwarders
+
+- เปิดเว็บเบราว์เซอร์และไปที่ `http://<IP_ADDRESS>:5380`
+
+- ไปที่เมนู Settings > Proxy & Forwarders
+
+    - Forwarders: กรอก IP Address ของ DNS Server ที่ต้องการใช้งาน
+
+        ![dns-3](/img/technitium/dns-3.png)
+
+- เลื่อนลงมาที่ด้านล่างสุดของหน้า แล้วคลิก "Save Settings"
+
+## Zone
+
+พื้นที่หรือขอบเขตของการจัดการ DNS Records สำหรับโดเมนหนึ่ง ๆ โดยผู้ดูแลระบบสามารถกำหนดและควบคุมการตั้งค่า DNS ภายในโซนนั้นได้
+
+**ตัวอย่าง:** สมมุติว่าโดเมนของคุณคือ example.com คุณอาจจะมี DNS Zone ที่ประกอบด้วย
+
+- example.com → A record → 192.0.2.10
+
+- www.example.com → CNAME → example.com
+
+- mail.example.com → MX record → mail server
+
+- blog.example.com → A record → 192.0.2.20
+
+## ประเภทของ Zone
+
+| ประเภท                             | คำอธิบาย                                                                    | การใช้งาน                                                                |
+| ---------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Primary Zone                       | โซนหลักที่มี ไฟล์ข้อมูลต้นฉบับของ DNS records                           | ใช้เมื่อคุณเป็นเจ้าของหรือผู้ควบคุม DNS records โดยตรง                   |
+| Secondary Zone                     | สำเนาของ Primary Zone ที่ทำ read-only replication ผ่าน DNS (AXFR)       | ใช้สำหรับโหลดบาลานซ์, สำรองข้อมูล, หรือเพื่อเพิ่มความเร็วในการตอบ DNS    |
+| Stub Zone                          | โซนที่มีแค่ NS, SOA และ A records ของ authoritative server ของโดเมนนั้น | ใช้เพื่อระบุตำแหน่ง DNS Server ที่แท้จริงโดยไม่ต้องมีทุก record          |
+| Reverse Lookup Zone                | ใช้สำหรับแปลงจาก IP address → domain name                               | ใช้ในระบบที่ต้องการตรวจสอบว่า IP address นี้มาจากโดเมนอะไร (PTR records) |
+| Forward Lookup Zone                | โซนทั่วไปที่ใช้ในการแปลง domain name → IP address                       | ใช้สำหรับเว็บไซต์, อีเมล, บริการอื่น ๆ บนอินเทอร์เน็ต                    |
+
+## Forward Lookup Zone
+
+- ไปที่เมนู Zones
+
+    ![dns-4](/img/technitium/dns-4.png)
+
+- คลิกปุ่ม Add Zone
+
+- กรอกชื่อโดเมนที่ต้องการสร้าง เช่น ctsurin.local
+
+- เลือกประเภท Zone เป็น Primary
+
+- เลือก "Use SOA Serial Date Scheme" เพื่อใช้รูปแบบวันที่ใน SOA record
+
+- คลิกปุ่ม Add
+
+    ![dns-5](/img/technitium/dns-5.png)
+
+- หลังจากสร้างโซนแล้ว จะมีหน้าต่างให้เพิ่ม DNS Records
+
+    ![dns-6](/img/technitium/dns-6.png)
+
+### เพิ่ม A Record สำหรับ Primary DNS Server
+
+- คลิกปุ่ม Add Record
+
+- กรอกชื่อของ Primary DNS Server เช่น ns1
+
+- เลือกประเภทเป็น A record
+
+- กรอก IP Address ของ Primary DNS Server เช่น 10.11.254.10
+
+- คลิกปุ่ม Save
+
+    ![dns-7](/img/technitium/dns-7.png)
+
+- หลังจากเพิ่ม A record แล้ว จะเห็นรายการในหน้า Zone
+
+    ![dns-8](/img/technitium/dns-8.png)
+
+## Reverse Lookup Zone
+
+- ไปที่เมนู Zones
+
+    ![dns-4](/img/technitium/dns-4.png)
+
+- คลิกปุ่ม Add Zone
+
+- กรอกชื่อโซนที่ต้องการสร้าง เช่น 10.11.254.0/24
+
+- เลือกประเภท Zone เป็น Primary
+
+- เลือก "Use SOA Serial Date Scheme" เพื่อใช้รูปแบบวันที่ใน SOA record
+
+- คลิกปุ่ม Add
+
+    ![dns-9](/img/technitium/dns-9.png)
+
+- หลังจากสร้างโซนแล้ว จะมีหน้าต่างให้เพิ่ม DNS Records
+
+    ![dns-10](/img/technitium/dns-10.png)
+
+### เพิ่ม PTR Record สำหรับ Reverse DNS
+
+- คลิกปุ่ม Add Record
+
+- กรอกชื่อของ Reverse DNS (ที่อยู่ IP หลักสุดท้าย) เช่น 10
+
+- เลือกประเภทเป็น PTR record
+
+- กรอกชื่อโดเมนที่ต้องการแปลง เช่น ns1.ctsurin.local
+
+- คลิกปุ่ม Save
+
+    ![dns-11](/img/technitium/dns-11.png)
+
+- หลังจากเพิ่ม PTR record แล้ว จะเห็นรายการในหน้า Zone
+
+    ![dns-12](/img/technitium/dns-12.png)
+
+## ทดสอบการทำงาน
+
+หลังจากที่คุณได้ตั้งค่า DNS Server และ Zones เรียบร้อยแล้ว คุณสามารถทดสอบการทำงานของ DNS Server ได้โดยใช้เครื่องคอมพิวเตอร์ที่ติดตั้ง Windows
+
+### ตั้งค่า Network Adapter
+
+- เปิด Control Panel
+
+- ไปที่ Network and Internet
+
+    ![dns-13](/img/technitium/dns-13.png)
+
+- คลิก Network and Sharing Center
+
+    ![dns-14](/img/technitium/dns-14.png)
+
+- คลิก Change adapter settings
+
+    ![dns-15](/img/technitium/dns-15.png)
+
+- คลิกขวาที่ Network Adapter ที่ใช้งานอยู่ (เช่น Ethernet หรือ Wi-Fi) แล้วเลือก Properties
+
+    ![dns-16](/img/technitium/dns-16.png)
+
+    ![dns-17](/img/technitium/dns-17.png)
+
+- เลือก Internet Protocol Version 4 (TCP/IPv4) แล้วคลิก Properties
+
+    ![dns-18](/img/technitium/dns-18.png)
+
+- เลือก "Use the following DNS server addresses"
+
+    - Preferred DNS server: IP Address ของ Technitium DNS Server (เช่น 10.11.254.10)
+    
+    - Alternate DNS server: IP Address ของ Secondary DNS Server (ถ้ามี)
+
+    ![dns-19](/img/technitium/dns-19.png)
+
+- คลิก OK เพื่อบันทึกการตั้งค่า
+
+### nslookup
+
+- เปิด Command Prompt
+
+- ใช้คำสั่ง `nslookup` เพื่อตรวจสอบการทำงานของ DNS Server
+
+    ```bash
+    C:> nslookup <nameserver>
+    ```
+    
+    > แทนที่ `<nameserver>` ด้วยชื่อ DNS Server
+
+    ```bash
+    C:> nslookup ns1.ctsurin.local
+    Server:  ns1.ctsurin.local
+    Address:  10.11.254.10
+    ```
+
+    > ถ้าแสดงผลแบบนี้ แสดงว่า DNS Server ทำงานได้ถูกต้อง

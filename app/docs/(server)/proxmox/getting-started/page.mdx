@@ -1,0 +1,113 @@
+---
+title: Proxmox 
+sidebarTitle: Getting Started
+---
+
+import { Steps } from "nextra/components";
+
+# Proxmox
+
+แพลตฟอร์ม virtualization แบบโอเพนซอร์สที่ผสานรวมเทคโนโลยี KVM (Kernel-based Virtual Machine) และ LXC (Linux Containers) เข้าไว้ด้วยกัน ช่วยให้คุณสามารถรันทั้งเครื่องเสมือน (Virtual Machines - VMs) และคอนเทนเนอร์ (Containers) บนเซิร์ฟเวอร์เครื่องเดียวกันได้อย่างมีประสิทธิภาพ โดดเด่นด้วยการจัดการผ่านเว็บอินเทอร์เฟซที่ใช้งานง่าย และการสนับสนุนการทำงานแบบคลัสเตอร์เพื่อความพร้อมใช้งานสูง (High Availability)
+
+Proxmox VE (Virtual Environment) ถูกพัฒนาขึ้นบนพื้นฐานของ Debian Linux ทำให้มีความเสถียรสูงและสามารถปรับแต่งได้ตามความต้องการ นอกจากจะเป็นซอฟต์แวร์ฟรีแล้ว ยังมีชุมชนผู้ใช้งานขนาดใหญ่ที่คอยให้ความช่วยเหลือ และมีตัวเลือกการสมัครสมาชิกเพื่อรับการสนับสนุนระดับองค์กร
+
+## คุณสมบัติหลัก
+
+1. Virtualization และ Containerization
+    - รองรับ KVM สำหรับการรัน VMs ที่สามารถติดตั้งระบบปฏิบัติการได้หลากหลาย เช่น Windows, Linux, หรือ BSD
+    - รองรับ LXC สำหรับคอนเทนเนอร์ที่มีน้ำหนักเบา เหมาะสำหรับการรันแอปพลิเคชันที่ต้องการทรัพยากรน้อย
+
+2. Web-based Management Interface
+    - Proxmox VE มีหน้าเว็บที่ใช้งานง่าย ช่วยให้ผู้ดูแลระบบสามารถจัดการ VMs, คอนเทนเนอร์, สตอเรจ, และเครือข่ายได้จากที่เดียว
+    - รองรับการเข้าถึงจากระยะไกลและการจัดการแบบหลายผู้ใช้ (Multi-user)
+
+3. Clustering และ High Availability
+    - รองรับการสร้างคลัสเตอร์ของเซิร์ฟเวอร์หลายเครื่อง เพื่อให้สามารถโยกย้าย VMs หรือคอนเทนเนอร์ระหว่างโหนดได้โดยไม่หยุดชะงัก
+    - รองรับการทำงานแบบ High Availability เพื่อให้บริการไม่หยุดชะงักในกรณีที่โหนดใดโหนดหนึ่งล้มเหลว
+
+4. Storage Management
+    - รองรับระบบสตอเรจหลากหลาย เช่น ZFS, LVM, NFS, Ceph, และ GlusterFS
+    - มีความสามารถในการทำ snapshot, backup, และ replication เพื่อความปลอดภัยของข้อมูล
+
+5. Backup Tools
+
+   - มีระบบสำรองข้อมูลในตัวที่สามารถกำหนดตารางเวลาและกู้คืนข้อมูลได้อย่างง่าย
+   - รองรับการสำรองข้อมูลไปยังสตอเรจภายนอกหรือเซิร์ฟเวอร์ระยะไกล
+
+## ขั้นตอนการติดตั้ง
+
+<Steps>
+
+### ดาวน์โหลดไฟล์ ISO
+
+เปิดเว็บเบราว์เซอร์แล้วไปที่ https://www.proxmox.com/en/downloads เพื่อดาวน์โหลดไฟล์ ISO ของ Proxmox VE
+
+### สร้างบูต USB
+
+สร้างบูต USB จากไฟล์ ISO ที่ดาวน์โหลดมา และบูตเครื่องเซิร์ฟเวอร์ของคุณจาก USB
+
+### Welcome to Proxmox Virtual Environment
+
+เมื่อเข้าสู่หน้าจอการติดตั้ง ให้เลือก Install Proxmox VE แล้วกดปุ่ม Enter
+
+![install-1](/img/proxmox/install-1.png)
+
+### END USER LICENSE AGREEMENT (EULA)
+
+คลิก I agree เพื่อยอมรับข้อตกลงการอนุญาตใช้งานและดำเนินการต่อ
+
+![install-2](/img/proxmox/install-2.png)
+
+### Proxmox Virtual Environment (PVE)
+
+เลือกดิสก์ที่ต้องการติดตั้งระบบ Proxmox VE จากนั้นคลิก Next
+
+![install-3](/img/proxmox/install-3.png)
+
+### Location and Time Zone selection
+
+- Country: **กรอกชื่อประเทศที่คุณอยู่**
+- Time Zone: **เลือก Timezone**
+
+จากนั้นคลิก Next
+
+![install-4](/img/proxmox/install-4.png)
+
+### Administration Password and Email Address
+
+- Password: กรอกรหัสผ่านที่คุณต้องการใช้สำหรับบัญชีผู้ดูแลระบบ (root)
+- Confirm Password: กรอกรหัสผ่านซ้ำอีกครั้งเพื่อยืนยัน
+- Email: กรอกอีเมลสำหรับแจ้งเตือนหรือการกู้คืนระบบ
+
+> หากต้องการข้ามขั้นตอน Email คุณสามารถระบุเป็น `mail@example.local` ได้
+
+![install-5](/img/proxmox/install-5.png)
+
+### Management Network Configuration
+
+- Management Interface: เลือก Interface ที่ต้องการใช้งาน
+- Hostname (FQDN): กรอกชื่อเครื่อง
+- IP Address (CIDR): กรอก IP Address / กรอก Subnet Mask
+- Gateway: กรอก IP Address ของ Gateway
+- DNS Server: กรอก IP Address ของ DNS Server
+
+> ที่ช่อง Hostname จะต้องกรอกในรูปแบบของ FQDN เท่านั้น
+
+![install-6](/img/proxmox/install-6.png)
+
+### Summary
+
+ตรวจสอบข้อมูลสรุปการตั้งค่าทั้งหมด หากถูกต้อง ให้คลิก Install เพื่อเริ่มกระบวนการติดตั้ง Proxmox VE
+
+![install-7](/img/proxmox/install-7.png)
+
+</Steps>
+
+## Proxmox WebUI
+
+- เปิดเว็บเบราว์เซอร์และไปที่ `https://<IP_ADDRESS>:8006`
+> แทนที่ `<ip_address>` ด้วย IP Address ที่คุณตั้งค่าไว้ในขั้นตอนก่อนหน้า
+- Username: root
+- Password: รหัสผ่านที่คุณตั้งไว้ในขั้นตอน "Administration Password and Email Address"
+
+  ![install-8](/img/proxmox/install-8.png)

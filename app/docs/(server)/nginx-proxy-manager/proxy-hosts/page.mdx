@@ -1,0 +1,103 @@
+---
+title: Proxy Hosts
+sidebarTitle: Proxy Hosts
+---
+
+import { Steps } from 'nextra/components'
+
+# Proxy Hosts
+
+Proxy Hosts คือส่วนที่ใช้ตั้งค่าการทำงานของ Reverse Proxy ซึ่งทำให้คุณสามารถกำหนดให้โดเมนต่างๆ ชี้ไปยังเซิร์ฟเวอร์หรือบริการภายในระบบของคุณได้อย่างง่ายดาย โดยไม่จำเป็นต้องแก้ไขไฟล์คอนฟิกของ Nginx ด้วยตนเอง
+
+## Reverse Proxy คืออะไร
+
+Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่รับคำขอ (Request) จากผู้ใช้งาน แล้วส่งต่อไปยังเซิร์ฟเวอร์ปลายทาง (Backend) จากนั้นจะรับผลลัพธ์กลับมาและส่งให้ผู้ใช้งานอีกที โดยที่ผู้ใช้งานไม่ทราบว่าเบื้องหลังมีเซิร์ฟเวอร์หลายตัวอยู่
+
+**ตัวอย่างเช่น:**
+
+- ผู้ใช้งานต้องการเข้าใช้ `graylog.example.com`
+- คำขอจากผู้ใช้งานจะถูกส่งไปยัง Reverse Proxy (เช่น Nginx Proxy Manager)
+- Reverse Proxy จะส่งคำขอนั้นไปยังเซิร์ฟเวอร์ปลายทาง (เช่น `192.168.0.2:9000` หรือ backend server)
+- เมื่อเซิร์ฟเวอร์ปลายทางตอบกลับข้อมูล (เช่น หน้าเว็บ หรือ API Response) มาที่ Reverse Proxy
+- Reverse Proxy จะส่งผลลัพธ์นั้นกลับไปให้ผู้ใช้งาน โดยที่ผู้ใช้งานไม่ทราบเลยว่าเซิร์ฟเวอร์ปลายทางคืออะไร
+
+## ขั้นตอนการจัดการ Proxy Host บน Nginx Proxy Manager
+
+<Steps>
+
+### ล็อกอินเข้าสู่หน้า Dashboard
+
+เปิดเบราว์เซอร์และเข้าไปที่ `http://<IP_ADDRESS>:81`
+
+![login-page](/img/nginx-proxy-manager/login-page.png)
+
+### ไปที่เมนู **Proxy Hosts**
+
+![proxy-hosts-1](/img/nginx-proxy-manager/proxy-hosts-1.png)
+
+### คลิก **Add Proxy Host**
+
+![proxy-hosts-2](/img/nginx-proxy-manager/proxy-hosts-2.png)
+
+### แท็บ **Details**
+
+![proxy-hosts-3](/img/nginx-proxy-manager/proxy-hosts-3.png)
+
+| หัวข้อ | รายละเอียด |
+|--------|------------|
+| **Domain Names** | ชื่อโดเมนที่ต้องการใช้งาน เช่น `app.example.com` (สามารถใส่ได้มากกว่า 1 โดเมน) |
+| **Scheme** | เลือก `http` หรือ `https` ตาม backend ของคุณ |
+| **Forward Hostname / IP** | IP Address หรือชื่อโฮสต์ของ backend เช่น `localhost`, `192.168.1.10` |
+| **Forward Port** | พอร์ตของ backend เช่น `3000` |
+| **Block Common Exploits** | เปิดใช้งานการป้องกันการโจมตีที่พบบ่อย |
+| **Websockets Support** | เปิดใช้งานหาก backend ใช้ WebSocket (เช่น Proxmox, Portainer.io) |
+| **Access List** | เลือก Access List หากต้องการจำกัดการเข้าถึง |
+
+### แท็บ **SSL**
+
+![proxy-hosts-4](/img/nginx-proxy-manager/proxy-hosts-4.png)
+
+| ตัวเลือก | ความหมาย |
+|----------|-----------|
+| **Request a new SSL Certificate** | ขอใบรับรอง SSL จาก Let's Encrypt |
+| **Force SSL** | บังคับให้ redirect จาก HTTP ไป HTTPS |
+| **HTTP/2 Support** | เปิดใช้งาน HTTP/2 เพื่อเพิ่มความเร็วในการเข้าถึงเว็บไซต์ |
+| **HSTS Enabled** | เปิดใช้งาน HTTP Strict Transport Security (HSTS) |
+| **HSTS Subdomains** | บังคับให้ใช้ HSTS กับ subdomains ด้วย |
+| **DNS Challenge** | ใช้สำหรับขอใบรับรองผ่าน DNS (ใช้กรณีที่ไม่สามารถเปิดพอร์ตได้) |
+
+> **หมายเหตุ**: การขอใบรับรอง SSL จาก Let's Encrypt จะต้องจดโดเมนกับผู้ให้บริการจดโดเมนก่อน ถึงจะสามารถขอใบรับรองได้สำเร็จ หากใช้โดเมนภายใน (ไม่ใช่โดเมนสาธารณะ) สามารถข้ามขั้นตอนนี้ได้
+
+### บันทึกการตั้งค่า
+
+หลังจากกรอกข้อมูลครบถ้วนแล้ว ให้คลิกปุ่ม **Save** เพื่อบันทึกการตั้งค่า
+
+</Steps>
+
+## ตัวอย่าง
+
+ในการเพิ่ม Reverse Proxy สำหรับการจัดการ **Nginx Proxy Manager** (ที่พอร์ต 81) สามารถตั้งค่าได้ดังนี้:
+
+- **Domain Names**: `npm.homelab.local`
+- **Scheme**: `http`
+- **Forward Hostname / IP**: `localhost`
+- **Forward Port**: `81`
+- **Block Common Exploits**: `Enable`
+- **Access List**: `Publicly Accessible`
+
+![proxy-hosts-6](/img/nginx-proxy-manager/proxy-hosts-6.png)
+
+---
+
+### คำแนะนำเพิ่มเติม:
+
+1. **Domain Names**: ตรวจสอบให้แน่ใจว่า DNS ของโดเมนนี้ชี้ไปยัง IP ที่รัน Nginx Proxy Manager
+2. **SSL**: ถ้าต้องการให้การเชื่อมต่อมีความปลอดภัยมากขึ้น การเปิดใช้งาน SSL (HTTPS) เป็นเรื่องสำคัญ
+3. **Websockets**: สำหรับแอปพลิเคชันที่ใช้ WebSocket เช่น **Proxmox** หรือ **Portainer**, อย่าลืมเปิดใช้งานตัวเลือกนี้ เพื่อให้การเชื่อมต่อ WebSocket ทำงานได้อย่างถูกต้อง
+4. **Block Common Exploits**: ควรเปิดใช้ฟีเจอร์นี้เพื่อเพิ่มความปลอดภัยให้กับเซิร์ฟเวอร์ของคุณ
+
+---
+
+### Bonus
+
+- วิธีการอัปโหลดใบรับรอง SSL ที่สร้างมาจาก openssl เพื่อใช้ทดแทนการขอใบรับรองจาก Let's Encrypt (ไม่แนะนำสำหรับ Production) [คลิก](/docs/nginx-proxy-manager/ssl)
