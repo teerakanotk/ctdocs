@@ -33,7 +33,6 @@ export default async function RootLayout({ children }) {
           docsRepositoryBase="https://github.com/teerakanotk/ctdocs/tree/main"
           footer={footer}
           sidebar={{ toggleButton: false, defaultMenuCollapseLevel: 1 }}
-          // search={false}
         >
           {children}
         </Layout>
