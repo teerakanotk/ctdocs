@@ -7,6 +7,10 @@ export default {
     title: "Documentation",
     type: "page",
     items: {
+      _: {
+        type: "separator",
+        title: "Network",
+      },
       "huawei-usg6530e": {
         title: "Huawei USG6530E",
         items: {
@@ -16,12 +20,16 @@ export default {
           network: "",
         },
       },
+      __: {
+        type: "separator",
+        title: "Server",
+      },
       proxmox: {
         title: "Proxmox",
         items: {
           "getting-started": "",
           repository: "",
-          container: "",
+          lxc: "",
         },
       },
       technitium: {
