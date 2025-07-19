@@ -18,6 +18,7 @@ const TECHNITIUM = {
 const NGINX_PROXY_MANAGER = {
   "getting-started": "",
   "proxy-hosts": "",
+  ssl: "",
 };
 
 const ZABBIX = {
