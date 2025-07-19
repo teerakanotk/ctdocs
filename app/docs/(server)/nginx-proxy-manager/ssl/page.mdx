@@ -1,0 +1,65 @@
+import { Steps } from 'nextra/components'
+
+# SSL Certificates
+
+SSL Certificate (ใบรับรอง SSL) คือไฟล์ดิจิทัลที่ใช้เพื่อสร้างการเชื่อมต่อที่ปลอดภัยระหว่างเว็บไซต์กับผู้ใช้งาน โดยใช้เทคโนโลยีการเข้ารหัสข้อมูลผ่านโปรโตคอลที่เรียกว่า SSL (Secure Sockets Layer) หรือเวอร์ชันใหม่ที่เรียกว่า TLS (Transport Layer Security)
+
+## ทำไม SSL จึงสำคัญ?
+
+- ป้องกันการดักฟังข้อมูล เช่น รหัสผ่านหรือข้อมูลบัตรเครดิต
+- เพิ่มความน่าเชื่อถือ ให้กับเว็บไซต์ โดยแสดงสัญลักษณ์ 🔒 และใช้ HTTPS
+- ช่วยเรื่อง SEO เพราะ Google ให้คะแนนเว็บไซต์ที่ปลอดภัยสูงกว่า
+- รองรับกฎระเบียบ เช่น PCI DSS สำหรับธุรกิจที่เกี่ยวข้องกับธุรกรรมออนไลน์
+
+เมื่อเว็บไซต์มี SSL Certificate แล้ว ที่อยู่จะเปลี่ยนจาก http:// เป็น https:// ซึ่ง "s" หมายถึง "secure" หรือ "ปลอดภัย"
+
+## ขั้นตอนการเพิ่ม SSL Certificates
+
+<Steps>
+
+### ล็อกอินเข้าสู่หน้า Dashboard
+
+เปิดเว็บเบราว์เซอร์และไปที่ `http://IP_ADDRESS:81`
+
+### ไปที่เมนู SSL Certificates
+
+![ssl-certificate-1](/img/nginx-proxy-manager/ssl-certificate-1.png)
+
+### Add SSL Certificate
+
+คุณมีสองทางเลือกในการเพิ่มใบรับรอง SSL: **Let's Encrypt** หรือ **Custom** เลือกตามความต้องการของคุณ
+
+**สำหรับ Let's Encrypt**
+
+- คลิกปุ่ม Add SSL Certificate ที่มุมบนขวา จากนั้นเลือก Let's Encrypt
+
+![ssl-certificate-2](/img/nginx-proxy-manager/ssl-certificate-2.png)
+
+- แบบฟอร์ม "Add Let's Encrypt Certificate" จะปรากฏขึ้น กรอกข้อมูลต่อไปนี้:
+    - Domain Names: ป้อนชื่อโดเมนที่คุณต้องการขอใบรับรอง
+    - Email Address for Let's Encrypt: ระบุอีเมลสำหรับยืนยันตัวตนกับ Let's Encrypt Let's Encrypt
+    - ยอมรับข้อตกลงในการใช้งาน โดยการคลิกช่องทำเครื่องหมาย
+
+    ![letsencrypt-ssl-1](/img/nginx-proxy-manager/letsencrypt-ssl-1.png)
+
+- คลิกปุ่ม Save เพื่อยืนยันและบันทึกข้อมูลของคุณ
+
+----
+
+**สำหรับใบรับรองที่กำหนดเอง (Custom)**
+
+- คลิกปุ่ม Add SSL Certificate ที่มุมบนขวา จากนั้นเลือก Custom
+
+![ssl-certificate-2](/img/nginx-proxy-manager/ssl-certificate-2.png)
+
+- แบบฟอร์ม "Add Custom Certificate" จะปรากฏขึ้น ระบุข้อมูลดังนี้:
+    - Name: แนะนำให้ใช้ชื่อโดเมนของใบรับรองที่คุณกำลังอัปโหลด
+    - Certificate Key: อัปโหลดไฟล์ private key ของใบรับรองของคุณ
+    - Certificate: อัปโหลดไฟล์ certificate ของคุณ
+    - Intermediate Certificate: (ไม่บังคับ) หากคุณมีไฟล์ Intermediate Certificate สามารถอัปโหลดได้
+
+    ![custom-ssl-1](/img/nginx-proxy-manager/custom-ssl-1.png)
+
+- เมื่อกรอกข้อมูลครบถ้วนแล้ว คลิกปุ่ม Save เพื่อบันทึกใบรับรองของคุณ
+
+</Steps>
