@@ -1,11 +1,38 @@
+const HUAWEI_USG6530E = {
+  "getting-started": "",
+};
+
+const PROXMOX = {
+  "getting-started": "",
+  repository: "",
+  lxc: "",
+};
+
+const TECHNITIUM = {
+  "getting-started": "",
+  dns: "",
+  record: "",
+  dhcp: "",
+};
+
+const NGINX_PROXY_MANAGER = {
+  "getting-started": "",
+  "proxy-hosts": "",
+};
+
+const ZABBIX = {
+  "getting-started": "",
+  notification: "",
+};
+
 export default {
   index: {
     type: "page",
     display: "hidden",
   },
   docs: {
-    title: "Documentation",
     type: "page",
+    title: "Documentation",
     items: {
       _: {
         type: "separator",
@@ -13,12 +40,7 @@ export default {
       },
       "huawei-usg6530e": {
         title: "Huawei USG6530E",
-        items: {
-          "getting-started": "",
-          policy: "",
-          object: "",
-          network: "",
-        },
+        items: HUAWEI_USG6530E,
       },
       __: {
         type: "separator",
@@ -26,30 +48,21 @@ export default {
       },
       proxmox: {
         title: "Proxmox",
-        items: {
-          "getting-started": "",
-          repository: "",
-          lxc: "",
-        },
+        items: PROXMOX,
       },
       technitium: {
         title: "Technitium",
-        items: {
-          "getting-started": "",
-          dns: "",
-          record: "",
-          dhcp: "",
-        },
-      },
-      "nginx-proxy-manager": {
-        title: "Nginx Proxy Manager",
-        items: {
-          "getting-started": "",
-          "proxy-hosts": "",
-        },
+        items: TECHNITIUM,
       },
       docker: "",
-      zabbix: "",
+      "nginx-proxy-manager": {
+        title: "Nginx Proxy Manager",
+        items: NGINX_PROXY_MANAGER,
+      },
+      zabbix: {
+        title: "Zabbix",
+        items: ZABBIX,
+      },
     },
   },
 };
