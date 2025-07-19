@@ -1,103 +1,100 @@
----
-title: Proxy Hosts
-sidebarTitle: Proxy Hosts
----
-
 import { Steps } from 'nextra/components'
 
 # Proxy Hosts
 
-Proxy Hosts คือส่วนที่ใช้ตั้งค่าการทำงานของ Reverse Proxy ซึ่งทำให้คุณสามารถกำหนดให้โดเมนต่างๆ ชี้ไปยังเซิร์ฟเวอร์หรือบริการภายในระบบของคุณได้อย่างง่ายดาย โดยไม่จำเป็นต้องแก้ไขไฟล์คอนฟิกของ Nginx ด้วยตนเอง
+Proxy Hosts คือส่วนที่ใช้ตั้งค่าการทำงานของ Reverse Proxy ผ่าน Nginx Proxy Manager ซึ่งช่วยให้คุณกำหนดโดเมนต่าง ๆ ให้ชี้ไปยังเซิร์ฟเวอร์หรือบริการภายในระบบได้อย่างสะดวก โดยไม่ต้องแก้ไขไฟล์คอนฟิกของ Nginx ด้วยตัวเอง
 
 ## Reverse Proxy คืออะไร
 
-Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่รับคำขอ (Request) จากผู้ใช้งาน แล้วส่งต่อไปยังเซิร์ฟเวอร์ปลายทาง (Backend) จากนั้นจะรับผลลัพธ์กลับมาและส่งให้ผู้ใช้งานอีกที โดยที่ผู้ใช้งานไม่ทราบว่าเบื้องหลังมีเซิร์ฟเวอร์หลายตัวอยู่
+Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่รับคำขอ (Request) จากผู้ใช้งาน แล้วส่งต่อไปยังเซิร์ฟเวอร์ปลายทาง (Backend) จากนั้นนำผลลัพธ์ที่ได้กลับมาส่งให้ผู้ใช้งานอีกที โดยผู้ใช้งานไม่รู้ว่าเบื้องหลังมีเซิร์ฟเวอร์หลายตัวทำงานอยู่
 
-**ตัวอย่างเช่น:**
+**ตัวอย่างการทำงาน:**
 
-- ผู้ใช้งานต้องการเข้าใช้ `graylog.example.com`
-- คำขอจากผู้ใช้งานจะถูกส่งไปยัง Reverse Proxy (เช่น Nginx Proxy Manager)
-- Reverse Proxy จะส่งคำขอนั้นไปยังเซิร์ฟเวอร์ปลายทาง (เช่น `192.168.0.2:9000` หรือ backend server)
-- เมื่อเซิร์ฟเวอร์ปลายทางตอบกลับข้อมูล (เช่น หน้าเว็บ หรือ API Response) มาที่ Reverse Proxy
-- Reverse Proxy จะส่งผลลัพธ์นั้นกลับไปให้ผู้ใช้งาน โดยที่ผู้ใช้งานไม่ทราบเลยว่าเซิร์ฟเวอร์ปลายทางคืออะไร
+- ผู้ใช้งานเข้า `graylog.example.com`
 
-## ขั้นตอนการจัดการ Proxy Host บน Nginx Proxy Manager
+- คำขอถูกส่งไปยัง Reverse Proxy (Nginx Proxy Manager)
+
+- Reverse Proxy ส่งต่อคำขอไปยังเซิร์ฟเวอร์ปลายทาง เช่น `192.168.0.2:9000`
+
+- เซิร์ฟเวอร์ปลายทางตอบกลับผลลัพธ์ไปยัง Reverse Proxy
+
+- Reverse Proxy ส่งผลลัพธ์กลับให้ผู้ใช้งาน โดยผู้ใช้งานไม่ทราบที่อยู่จริงของเซิร์ฟเวอร์ปลายทาง
+
+## การตั้งค่า Proxy Host บน Nginx Proxy Manager
 
 <Steps>
 
-### ล็อกอินเข้าสู่หน้า Dashboard
+### เข้าสู่ระบบ Dashboard
 
 เปิดเบราว์เซอร์และเข้าไปที่ `http://<IP_ADDRESS>:81`
 
 ![login-page](/img/nginx-proxy-manager/login-page.png)
 
-### ไปที่เมนู **Proxy Hosts**
+### ไปที่เมนู Proxy Hosts
 
 ![proxy-hosts-1](/img/nginx-proxy-manager/proxy-hosts-1.png)
 
-### คลิก **Add Proxy Host**
+### คลิกปุ่ม Add Proxy Host
 
 ![proxy-hosts-2](/img/nginx-proxy-manager/proxy-hosts-2.png)
 
-### แท็บ **Details**
+### แท็บ Details
 
 ![proxy-hosts-3](/img/nginx-proxy-manager/proxy-hosts-3.png)
 
-| หัวข้อ | รายละเอียด |
-|--------|------------|
-| **Domain Names** | ชื่อโดเมนที่ต้องการใช้งาน เช่น `app.example.com` (สามารถใส่ได้มากกว่า 1 โดเมน) |
-| **Scheme** | เลือก `http` หรือ `https` ตาม backend ของคุณ |
-| **Forward Hostname / IP** | IP Address หรือชื่อโฮสต์ของ backend เช่น `localhost`, `192.168.1.10` |
-| **Forward Port** | พอร์ตของ backend เช่น `3000` |
-| **Block Common Exploits** | เปิดใช้งานการป้องกันการโจมตีที่พบบ่อย |
-| **Websockets Support** | เปิดใช้งานหาก backend ใช้ WebSocket (เช่น Proxmox, Portainer.io) |
-| **Access List** | เลือก Access List หากต้องการจำกัดการเข้าถึง |
+- Domain Names: ระบุชื่อโดเมนที่ต้องการให้ชี้
 
-### แท็บ **SSL**
+- Scheme: เลือกโปรโตคอลของ Backend (http หรือ https)
+
+- Forward Hostname / IP: กรอก IP หรือ Hostname ของเซิร์ฟเวอร์ปลายทาง
+
+- Forward Port: พอร์ตของ Backend ที่ต้องการเชื่อมต่อ
+
+- Block Common Exploits: เปิดเพื่อป้องกันการโจมตีทั่วไป
+
+- WebSockets Support: เปิดหาก Backend ใช้ WebSocket
+
+- Access List: จำกัดสิทธิ์การเข้าถึง proxy host
+
+### แท็บ SSL
 
 ![proxy-hosts-4](/img/nginx-proxy-manager/proxy-hosts-4.png)
 
-| ตัวเลือก | ความหมาย |
-|----------|-----------|
-| **Request a new SSL Certificate** | ขอใบรับรอง SSL จาก Let's Encrypt |
-| **Force SSL** | บังคับให้ redirect จาก HTTP ไป HTTPS |
-| **HTTP/2 Support** | เปิดใช้งาน HTTP/2 เพื่อเพิ่มความเร็วในการเข้าถึงเว็บไซต์ |
-| **HSTS Enabled** | เปิดใช้งาน HTTP Strict Transport Security (HSTS) |
-| **HSTS Subdomains** | บังคับให้ใช้ HSTS กับ subdomains ด้วย |
-| **DNS Challenge** | ใช้สำหรับขอใบรับรองผ่าน DNS (ใช้กรณีที่ไม่สามารถเปิดพอร์ตได้) |
+- Request a new SSL Certificate: เลือกเพื่อขอใบรับรอง SSL ฟรีจาก Let's Encrypt
 
-> **หมายเหตุ**: การขอใบรับรอง SSL จาก Let's Encrypt จะต้องจดโดเมนกับผู้ให้บริการจดโดเมนก่อน ถึงจะสามารถขอใบรับรองได้สำเร็จ หากใช้โดเมนภายใน (ไม่ใช่โดเมนสาธารณะ) สามารถข้ามขั้นตอนนี้ได้
+- Force SSL: เปิดใช้งานเพื่อบังคับให้ผู้ใช้ถูกเปลี่ยนเส้นทางจาก HTTP ไป HTTPS อัตโนมัติ
+
+- HTTP/2 Support: เปิดใช้งาน HTTP/2 เพื่อเพิ่มประสิทธิภาพความเร็วในการโหลดเว็บไซต์
+
+- HSTS Enabled: เปิดใช้งาน HTTP Strict Transport Security (HSTS) เพื่อบังคับเบราว์เซอร์ให้เชื่อมต่อด้วย HTTPS เท่านั้น
+
+- HSTS Subdomains: เปิดใช้งานให้บังคับใช้ HSTS กับโดเมนย่อยทั้งหมดด้วย
+
+- DNS Challenge: เลือกใช้เมื่อต้องการขอใบรับรองผ่าน DNS challenge (เหมาะกับกรณีที่ไม่สามารถเปิดพอร์ต 80/443 ได้)
+
+> ดูขั้นตอนการขอใบรับรอง SSL เพิ่มเติมได้ที่: [SSL Certificates](/docs/nginx-proxy-manager/ssl)
 
 ### บันทึกการตั้งค่า
 
-หลังจากกรอกข้อมูลครบถ้วนแล้ว ให้คลิกปุ่ม **Save** เพื่อบันทึกการตั้งค่า
+เมื่อกรอกข้อมูลครบถ้วน คลิก Save เพื่อบันทึกและเริ่มใช้งาน Proxy Host
 
 </Steps>
 
-## ตัวอย่าง
+## ตัวอย่างการตั้งค่า Proxy Host
 
-ในการเพิ่ม Reverse Proxy สำหรับการจัดการ **Nginx Proxy Manager** (ที่พอร์ต 81) สามารถตั้งค่าได้ดังนี้:
-
-- **Domain Names**: `npm.homelab.local`
-- **Scheme**: `http`
-- **Forward Hostname / IP**: `localhost`
-- **Forward Port**: `81`
-- **Block Common Exploits**: `Enable`
-- **Access List**: `Publicly Accessible`
+เพิ่ม Reverse Proxy สำหรับ Nginx Proxy Manager ที่รันบนพอร์ต 81
 
 ![proxy-hosts-6](/img/nginx-proxy-manager/proxy-hosts-6.png)
 
----
+**อธิบาย:**
 
-### คำแนะนำเพิ่มเติม:
-
-1. **Domain Names**: ตรวจสอบให้แน่ใจว่า DNS ของโดเมนนี้ชี้ไปยัง IP ที่รัน Nginx Proxy Manager
-2. **SSL**: ถ้าต้องการให้การเชื่อมต่อมีความปลอดภัยมากขึ้น การเปิดใช้งาน SSL (HTTPS) เป็นเรื่องสำคัญ
-3. **Websockets**: สำหรับแอปพลิเคชันที่ใช้ WebSocket เช่น **Proxmox** หรือ **Portainer**, อย่าลืมเปิดใช้งานตัวเลือกนี้ เพื่อให้การเชื่อมต่อ WebSocket ทำงานได้อย่างถูกต้อง
-4. **Block Common Exploits**: ควรเปิดใช้ฟีเจอร์นี้เพื่อเพิ่มความปลอดภัยให้กับเซิร์ฟเวอร์ของคุณ
+เมื่อผู้ใช้งานเข้าผ่าน http://npm.homelab.local คำขอจะถูกส่งมายัง Nginx Proxy Manager ซึ่งจะทำหน้าที่เป็น Reverse Proxy ส่งต่อคำขอไปยังเครื่อง localhost ที่พอร์ต 81 เพื่อให้บริการหน้าจอจัดการของ Nginx Proxy Manager ได้อย่างถูกต้องและปลอดภัย
 
 ---
 
-### Bonus
+### คำแนะนำเพิ่มเติม
 
-- วิธีการอัปโหลดใบรับรอง SSL ที่สร้างมาจาก openssl เพื่อใช้ทดแทนการขอใบรับรองจาก Let's Encrypt (ไม่แนะนำสำหรับ Production) [คลิก](/docs/nginx-proxy-manager/ssl)
+- ตรวจสอบว่า DNS ของโดเมนชี้มาที่ IP ที่ติดตั้ง Nginx Proxy Manager
+- ควรเปิดใช้งาน SSL (HTTPS) เพื่อความปลอดภัย
+- แอปพลิเคชันที่ใช้ WebSocket เช่น Proxmox ควรเปิด WebSockets Support
+- เปิดใช้งาน Block Common Exploits เพื่อป้องกันการโจมตีทั่วไป

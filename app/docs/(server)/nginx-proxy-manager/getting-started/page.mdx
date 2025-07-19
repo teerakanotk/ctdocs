@@ -7,15 +7,29 @@ import { Steps } from "nextra/components";
 
 # Nginx Proxy Manager
 
-เครื่องมือโอเพนซอร์สที่ช่วยให้คุณสามารถจัดการ **Reverse Proxy** ได้ง่ายผ่าน **Web GUI** โดยไม่ต้องเขียนไฟล์ config ของ Nginx ด้วยตนเอง รองรับการตั้งค่า SSL แบบ Let's Encrypt, การจัดการโดเมน, Redirect, และอื่น ๆ
+Nginx Proxy Manager (NPM) เป็นเครื่องมือ GUI แบบ web-based ที่ช่วยให้คุณสามารถจัดการ **reverse proxy** ด้วย Nginx ได้ง่าย ๆ โดยไม่ต้องเขียนไฟล์คอนฟิกเอง
 
-## ความต้องการของระบบ
+**เหมาะสำหรับ**
 
-- Docker Engine
+- จัดการ domain/subdomain หลายตัว
 
-> หากยังไม่ได้ติดตั้ง Docker สามารถดูวิธีติดตั้งได้ [ที่นี่](/docs/docker)
+- เชื่อมต่อบริการต่าง ๆ ผ่าน reverse proxy (เช่น Home Assistant, Proxmox, Nextcloud)
 
-## ขั้นตอนการติดตั้ง
+**ฟีเจอร์หลัก**
+
+- รองรับ SSL certificate ฟรีจาก Let's Encrypt (ตั้งค่าอัตโนมัติ)
+
+- ตั้งค่า redirect / forward พอร์ตได้
+
+- ใช้งานได้ผ่าน Docker
+
+- มีระบบ Access List และการจำกัด IP
+
+- GUI สวย ใช้ง่าย ไม่ต้องใช้ command line
+
+## ขั้นตอนการติดตั้งผ่าน Docker
+
+หากยังไม่ได้ติดตั้ง Docker สามารถดูวิธีติดตั้งได้ [ที่นี่](/docs/docker)
 
 <Steps>
 
@@ -42,7 +56,7 @@ services:
     restart: unless-stopped
     ports:
       - 80:80
-      - 81:81
+      - 81:81 # Admin panel
       - 443:443
     volumes:
       - ./data:/data
@@ -80,43 +94,28 @@ CONTAINER ID   IMAGE                             COMMAND   CREATED         STATU
 
 </Steps>
 
-## เริ่มต้นใช้งาน
+## ล็อกอินเข้าสู่หน้า Admin Dashboard
 
 1. เปิดเบราว์เซอร์และเข้าไปที่ `http://<IP_ADDRESS>:81`
 
-    ![login-page](/img/nginx-proxy-manager/login-page.png)
-
-2. ล็อกอินด้วยข้อมูลเริ่มต้น
+2. ชื่อผู้ใช้และรหัสผ่านเริ่มต้น
 
     - Email: `admin@example.com`
+    
     - Password: `changeme`
 
-3. ระบบจะให้คุณเปลี่ยนข้อมูลบัญชี
+    (ระบบจะให้คุณเปลี่ยนอีเมลและรหัสผ่านทันทีที่ login ครั้งแรก)
 
-    - เปลี่ยนอีเมล
+    ![login-page](/img/nginx-proxy-manager/login-page.png)
 
-        ![setup-1](/img/nginx-proxy-manager/setup-1.png)
-
-    - เปลี่ยนรหัสผ่าน
-
-        ![setup-2](/img/nginx-proxy-manager/setup-2.png)
-
-4. เข้าสู่หน้าหลักของ Dashboard
-
-    ![setup-3](/img/nginx-proxy-manager/setup-3.png)
-
-## การตั้งค่า Default site
-
-การตั้งค่า Default site ใช้สำหรับกรณีที่ต้องการควบคุมการเข้าถึงจากผู้ใช้ที่ไม่รู้จัก หรือป้องกันไม่ให้มีการตอบสนองจากเซิร์ฟเวอร์เมื่อผู้ใช้เข้าถึงโดเมนที่ไม่ได้ตั้งค่า proxy ไว้
-
-### ขั้นตอนการตั้งค่า
+## การตั้งค่าเบื้องต้น
 
 - ไปที่เมนู Settings > คลิกที่จุดสามจุด (⋮) > เลือก Edit
 
-    ![setup-4](/img/nginx-proxy-manager/setup-4.png)
+    ![setup-1](/img/nginx-proxy-manager/setup-1.png)
 
 - เลือก No Response (444) แล้วคลิก Save
 
-    ![setup-5](/img/nginx-proxy-manager/setup-5.png)
+    ![setup-2](/img/nginx-proxy-manager/setup-2.png)
 
-- เสร็จสิ้น
+การตั้งค่า Default Site ที่หน้า Settings ใน Nginx Proxy Manager มีไว้เพื่อกำหนดว่า จะให้ Redirect หรือแสดงผลอะไร เมื่อผู้ใช้งานเข้าถึง IP หรือโดเมนของคุณโดยไม่ได้ระบุ Hostname (เช่น เข้าผ่าน IP ตรง ๆ หรือโดเมนที่ยังไม่มี proxy host ตั้งไว้)

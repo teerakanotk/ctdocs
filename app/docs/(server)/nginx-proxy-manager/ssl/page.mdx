@@ -1,0 +1,107 @@
+import { Steps } from 'nextra/components'
+
+# SSL Certificates
+
+SSL Certificate (ใบรับรอง SSL) คือไฟล์ดิจิทัลที่ใช้เพื่อสร้างการเชื่อมต่อที่ปลอดภัยระหว่างเว็บไซต์กับผู้ใช้งาน โดยใช้เทคโนโลยีการเข้ารหัสข้อมูลผ่านโปรโตคอลที่เรียกว่า SSL (Secure Sockets Layer) หรือเวอร์ชันใหม่ที่เรียกว่า TLS (Transport Layer Security)
+
+## ทำไม SSL จึงสำคัญ?
+
+- ป้องกันการดักฟังข้อมูล เช่น รหัสผ่านหรือข้อมูลบัตรเครดิต
+
+- เพิ่มความน่าเชื่อถือ ให้กับเว็บไซต์ โดยแสดงสัญลักษณ์ 🔒 และใช้ HTTPS
+
+- ช่วยเรื่อง SEO เพราะ Google ให้คะแนนเว็บไซต์ที่ปลอดภัยสูงกว่า
+
+- รองรับกฎระเบียบ เช่น PCI DSS สำหรับธุรกิจที่เกี่ยวข้องกับธุรกรรมออนไลน์
+
+เมื่อเว็บไซต์มี SSL Certificate แล้ว ที่อยู่จะเปลี่ยนจาก http:// เป็น https:// ซึ่ง "s" หมายถึง "secure" หรือ "ปลอดภัย"
+
+## ขั้นตอนการเพิ่ม SSL Certificates
+
+<Steps>
+
+### ล็อกอินเข้าสู่หน้า Dashboard
+
+เปิดเว็บเบราว์เซอร์และไปที่ `http://IP_ADDRESS:81`
+
+### ไปที่เมนู SSL Certificates
+
+![ssl-certificate-1](/img/nginx-proxy-manager/ssl-certificate-1.png)
+
+### Add SSL Certificate
+
+คุณมีสองทางเลือกในการเพิ่มใบรับรอง SSL: **Let's Encrypt** หรือ **Custom** เลือกตามความต้องการของคุณ
+
+**3.1 สำหรับ Let's Encrypt**
+
+- คลิกปุ่ม Add SSL Certificate ที่มุมบนขวา จากนั้นเลือก Let's Encrypt
+
+![ssl-certificate-2](/img/nginx-proxy-manager/ssl-certificate-2.png)
+
+- แบบฟอร์ม "Add Let's Encrypt Certificate" จะปรากฏขึ้น กรอกข้อมูลต่อไปนี้:
+
+    - Domain Names: ระบุชื่อโดเมนที่ต้องการขอใบรับรอง
+
+    - Email Address for Let's Encrypt: ระบุอีเมลสำหรับการยืนยันตัวตน
+
+    - Agree to Terms of Service: ติ๊กถูกเพื่อยอมรับเงื่อนไข
+
+    ![letsencrypt-ssl-1](/img/nginx-proxy-manager/letsencrypt-ssl-1.png)
+
+- กด Save เพื่อบันทึกและดำเนินการขอใบรับรอง
+
+<br/>
+
+**3.2 สำหรับใบรับรองแบบ Custom**
+
+- คลิกปุ่ม Add SSL Certificate ที่มุมบนขวา แล้วเลือก Custom
+
+![ssl-certificate-2](/img/nginx-proxy-manager/ssl-certificate-2.png)
+
+- ในแบบฟอร์ม "Add Custom Certificate" ระบุข้อมูลดังนี้:
+
+    - Name: ชื่อสำหรับใบรับรอง (แนะนำใช้ชื่อโดเมน)
+
+    - Certificate Key: อัปโหลดไฟล์ Private Key
+
+    - Certificate: อัปโหลดไฟล์ Certificate
+
+    - Intermediate Certificate: (ไม่บังคับ) อัปโหลดไฟล์ Intermediate Certificate หากมี
+
+    ![custom-ssl-1](/img/nginx-proxy-manager/custom-ssl-1.png)
+
+- คลิก Save เพื่อบันทึกใบรับรองของคุณ
+
+</Steps>
+
+## ขั้นตอนการตั้งค่า SSL ใน Proxy Host
+
+การเปิดใช้งาน SSL ใน Proxy Host จะช่วยให้เว็บไซต์ของคุณรองรับการเชื่อมต่อแบบปลอดภัยผ่าน HTTPS โดยคุณสามารถเลือกใช้ใบรับรองที่มีอยู่แล้ว หรือตั้งค่าให้ Nginx Proxy Manager ขอใบรับรองใหม่จาก Let's Encrypt อัตโนมัติได้
+
+<Steps>
+
+### เข้าไปที่เมนู Proxy Hosts
+
+ล็อกอินเข้า Nginx Proxy Manager แล้วไปที่แท็บ Proxy Hosts
+
+### เลือก Proxy Host ที่ต้องการตั้งค่า SSL
+
+### ที่แท็บ SSL ให้ตั้งค่าดังนี้
+
+- **Enable SSL:** ติ๊กเลือกเพื่อเปิดใช้งาน SSL กับ Proxy Host นี้
+
+- **SSL Certificate:** เลือกใบรับรอง SSL ที่คุณได้เพิ่มไว้ในเมนู SSL Certificates หากยังไม่มีใบรับรอง ให้สร้างใหม่ที่เมนู SSL Certificates ก่อน
+
+- **Force SSL:** เปิดใช้งานเพื่อบังคับให้ผู้ใช้งานเข้าถึงเว็บไซต์ผ่าน HTTPS เท่านั้น (ระบบจะ redirect จาก HTTP ไป HTTPS อัตโนมัติ)
+
+- **HTTP/2 Support:** เปิดใช้งานเพื่อเพิ่มประสิทธิภาพการเชื่อมต่อและโหลดหน้าเว็บที่รวดเร็วขึ้น
+
+- **HSTS Enabled:** เปิดใช้งาน HTTP Strict Transport Security เพื่อบังคับให้เบราว์เซอร์จดจำการใช้ HTTPS
+
+- **HSTS Subdomains:** บังคับให้ใช้ HSTS กับโดเมนย่อยทั้งหมดด้วย
+
+- **DNS Challenge:** เลือกใช้กรณีที่คุณต้องการขอใบรับรองผ่าน DNS (ใช้เมื่อไม่สามารถเปิดพอร์ต 80/443 ได้)
+
+### กด Save เพื่อบันทึกการตั้งค่า
+
+</Steps>
