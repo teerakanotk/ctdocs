@@ -1,0 +1,101 @@
+import { Steps } from 'nextra/components'
+
+# Proxy Hosts
+
+Proxy Hosts คือฟีเจอร์สำคัญของ Nginx Proxy Manager (NPM) ที่ใช้สำหรับตั้งค่า Reverse Proxy ผ่านอินเทอร์เฟซแบบกราฟิก ช่วยให้คุณสามารถชี้โดเมนต่าง ๆ ไปยังบริการหรือเซิร์ฟเวอร์ภายในเครือข่ายได้โดยไม่ต้องเขียนไฟล์คอนฟิกของ Nginx ด้วยตนเอง
+
+## Reverse Proxy คืออะไร
+
+Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่รับคำขอจากผู้ใช้งาน แล้วส่งต่อคำขอนั้นไปยังเซิร์ฟเวอร์ปลายทาง (Backend) จากนั้นนำผลลัพธ์กลับมาส่งให้ผู้ใช้ โดยที่ผู้ใช้ไม่ทราบว่าเบื้องหลังมีเซิร์ฟเวอร์ใดทำงานอยู่
+
+**ตัวอย่าง:**
+
+- ผู้ใช้เข้าที่ `graylog.example.com`
+
+- Nginx Proxy Manager รับคำขอในฐานะ Reverse Proxy
+
+- NPM ส่งคำขอไปยังเซิร์ฟเวอร์จริงที่อยู่ภายใน เช่น `192.168.0.2:9000`
+
+- เซิร์ฟเวอร์ปลายทางตอบกลับข้อมูล
+
+- NPM ส่งข้อมูลกลับไปยังผู้ใช้งาน
+
+## การตั้งค่า Proxy Host บน Nginx Proxy Manager
+
+<Steps>
+
+### เข้าสู่ระบบ Dashboard
+
+เปิดเบราว์เซอร์และเข้าไปที่ `http://<IP_ADDRESS>:81`
+
+![login-page](/img/nginx-proxy-manager/login-page.png)
+
+### ไปที่เมนู Proxy Hosts
+
+![proxy-hosts-1](/img/nginx-proxy-manager/proxy-hosts-1.png)
+
+### คลิกปุ่ม Add Proxy Host
+
+![proxy-hosts-2](/img/nginx-proxy-manager/proxy-hosts-2.png)
+
+### แท็บ Details
+
+![proxy-hosts-3](/img/nginx-proxy-manager/proxy-hosts-3.png)
+
+- **Domain Names:** ระบุโดเมน เช่น `graylog.example.com`
+
+- **Scheme:** เลือก `http` หรือ `https` ตามโปรโตคอลของ backend
+
+- **Forward Hostname / IP:** กรอก IP หรือชื่อของเซิร์ฟเวอร์ปลายทาง เช่น `192.168.0.10`
+
+- **Forward Port:** ระบุพอร์ต เช่น `9000`
+
+- **Block Common Exploits:** แนะนำให้เปิดใช้งานเพื่อป้องกันการโจมตีพื้นฐาน
+
+- **WebSockets Support:** เปิดหาก backend มีการใช้งาน WebSocket
+
+- **Access List:** เลือก Access Control ถ้าต้องการจำกัดการเข้าถึง
+
+### แท็บ SSL
+
+![proxy-hosts-4](/img/nginx-proxy-manager/proxy-hosts-4.png)
+
+- **Request a new SSL Certificate:** ขอใบรับรองฟรีจาก Let's Encrypt
+
+- **Force SSL:** บังคับให้ redirect จาก HTTP → HTTPS
+
+- **HTTP/2 Support:** เปิดใช้งาน HTTP/2 เพื่อเพิ่มประสิทธิภาพความเร็วในการโหลดเว็บไซต์
+
+- **HSTS Enabled:** เปิดเพื่อบังคับให้เบราว์เซอร์ใช้ HTTPS อย่างถาวร
+
+- **HSTS Subdomains:** บังคับ HSTS สำหรับ subdomain ด้วย
+
+- **DNS Challenge:** ใช้เมื่อไม่สามารถเปิดพอร์ต 80/443 ได้ (รองรับเฉพาะบางผู้ให้บริการ DNS)
+
+> อ่านเพิ่มเติมเกี่ยวกับการขอใบรับรองได้ที่: [SSL Certificates](/docs/nginx-proxy-manager/ssl)
+
+### บันทึกการตั้งค่า
+
+คลิกปุ่ม Save เพื่อสร้าง Proxy Host และเปิดใช้งาน
+
+</Steps>
+
+## ตัวอย่างการใช้งาน
+
+เพิ่ม Proxy Host สำหรับ Nginx Proxy Manager เอง
+
+![proxy-hosts-6](/img/nginx-proxy-manager/proxy-hosts-6.png)
+
+> เมื่อผู้ใช้เข้าที่ `http://npm.homelab.local` คำขอจะถูกส่งผ่าน Reverse Proxy ไปยัง NPM ที่พอร์ต 81
+
+---
+
+### คำแนะนำเพิ่มเติม
+
+- ตรวจสอบว่า DNS ของโดเมนชี้มาที่ IP ที่ติดตั้ง Nginx Proxy Manager
+
+- แนะนำให้เปิดใช้งาน SSL (HTTPS) เสมอ เพื่อความปลอดภัย
+
+- หาก backend ใช้ WebSocket เช่น Proxmox, Grafana — อย่าลืมเปิด Websockets Support
+
+- เปิดใช้งาน Block Common Exploits เพื่อป้องกันการโจมตีทั่วไป

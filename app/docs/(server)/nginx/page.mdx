@@ -1,0 +1,62 @@
+---
+title: Nginx
+asIndexPage: true
+---
+
+import { Steps } from 'nextra/components';
+
+## วิธีติดตั้ง NGINX บน Ubuntu
+
+<Steps>
+
+### อัปเดตแพ็กเกจในเครื่อง
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### ติดตั้ง NGINX (Web Server)
+
+```bash
+sudo apt install nginx
+```
+
+### ทดสอบการเข้าถึงหน้าเว็บ
+
+```bash
+http://<IP_ADDRESS>
+```
+
+</Steps>
+
+## Basic command
+
+- เปิดใช้งานเซอร์วิส
+
+    ```bash
+    sudo systemctl start nginx
+    ```
+
+- รีสตาร์ทเซอร์วิส
+
+    ```bash
+    sudo systemctl restart nginx
+    ```
+
+- เปิดให้ Nginx ทำงานโดยอัตโนมัติทุกครั้งที่เปิดเครื่อง
+
+    ```bash
+    sudo enable nginx
+    ```
+
+- ตรวจสอบสถานะของเซอร์วิส
+
+    ```bash
+    sudo systemctl status nginx
+    ```
+
+- ทดสอบไฟล์คอนฟิก
+
+    ```bash
+    sudo nginx -t
+    ```

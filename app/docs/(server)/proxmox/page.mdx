@@ -1,0 +1,165 @@
+---
+title: Proxmox 
+asIndexPage: true
+---
+
+import { Steps } from "nextra/components";
+
+# Proxmox
+
+Proxmox VE (Virtual Environment) คือแพลตฟอร์มโอเพ่นซอร์สสำหรับการบริหารจัดการเซิร์ฟเวอร์เสมือนแบบครบวงจร รองรับทั้ง Virtual Machines (VMs) และ Containers ผ่าน Web Interface ที่ใช้งานง่าย
+
+## คุณสมบัติเด่น
+
+- รองรับการรันหลายระบบปฏิบัติการ เช่น Windows และ Linux บนเครื่องเดียวกัน
+
+- รองรับการสร้างและจัดการ Containers ที่เบาและรวดเร็วกว่าการใช้ VMs
+
+- มีระบบ Snapshot และ Backup สำหรับความปลอดภัยของข้อมูล
+
+- สนับสนุน Live Migration ในคลัสเตอร์เดียวกัน
+
+- รองรับการทำงานแบบ Cluster สำหรับระบบหลายโหนด
+
+## การสร้าง USB สำหรับติดตั้ง Proxmox VE
+
+- ไปที่เว็บไซต์ [Proxmox Downloads](https://www.proxmox.com/en/downloads) เพื่อดาวน์โหลดไฟล์ ISO ของ Proxmox VE
+
+- ใช้โปรแกรม Rufus เพื่อสร้าง USB Boot จากไฟล์ ISO
+
+- เชื่อมต่อ USB เข้ากับเซิร์ฟเวอร์และบูตจาก USB ดังกล่าว
+
+## ขั้นตอนการติดตั้ง Proxmox VE
+
+<Steps>
+
+### Welcome to Proxmox Virtual Environment
+
+เมื่อเข้าสู่หน้าจอการติดตั้ง ให้เลือก Install Proxmox VE แล้วกด Enter
+
+![install-1](/img/proxmox/install-1.png)
+
+### END USER LICENSE AGREEMENT (EULA)
+
+อ่านข้อตกลงการใช้งาน จากนั้นคลิก I agree
+
+![install-2](/img/proxmox/install-2.png)
+
+### Proxmox Virtual Environment (PVE)
+
+เลือกดิสก์ที่ต้องการติดตั้งระบบ แล้วคลิก Next
+
+![install-3](/img/proxmox/install-3.png)
+
+### Location and Time Zone selection
+
+- **Country:** เลือกประเทศที่ใช้งาน
+
+- **Time Zone:** ตั้งค่าเขตเวลาให้ตรงกับตำแหน่งที่ตั้ง
+
+    ![install-4](/img/proxmox/install-4.png)
+
+คลิก Next
+
+### Administration Password and Email Address
+
+- **Password:** กำหนดรหัสผ่านสำหรับบัญชี `root`
+
+- **Confirm Password:** กรอกรหัสผ่านซ้ำอีกครั้งเพื่อยืนยัน
+
+- **Email:** ใส่อีเมลสำหรับรับการแจ้งเตือน (หากไม่มีสามารถใช้ mail@example.local)
+
+    ![install-5](/img/proxmox/install-5.png)
+
+### Management Network Configuration
+
+- **Management Interface:** เลือก Network Interface ที่ใช้
+
+- **Hostname (FQDN):** ระบุชื่อโฮสต์ในรูปแบบ FQDN เช่น `pve.localdomain`
+
+- **IP Address (CIDR):** กรอก IP Address พร้อม Subnet
+
+- **Gateway:** กรอก Gateway ของเครือข่าย
+
+- **DNS Server:** ระบุ DNS Server ที่ใช้งาน
+
+    ![install-6](/img/proxmox/install-6.png)
+
+### Summary
+
+ตรวจสอบการตั้งค่าทั้งหมด หากถูกต้อง คลิก Install เพื่อเริ่มการติดตั้ง
+
+ ![install-7](/img/proxmox/install-7.png)
+
+</Steps>
+
+## การเข้าสู่ระบบ Proxmox ผ่าน Web Interface
+
+- เปิดเว็บเบราว์เซอร์และไปที่ `https://<IP_ADDRESS>:8006`
+
+- กรอกข้อมูลเพื่อเข้าสู่ระบบ
+
+    - **Username:** `root`
+
+    - **Password:** รหัสผ่านที่คุณตั้งค่าไว้
+
+    - **Realm:** Linux PAM standard authentication
+
+    ![install-8](/img/proxmox/install-8.png)
+
+## การตั้งค่า Repository แบบไม่มี Subscription (No-Subscription Repository)
+
+<Steps>
+
+### ปิดใช้งาน Enterprise Repository
+
+- เลือก Node ที่ต้องการ เช่น `pve1`
+
+- ไปที่เมนู **Updates** > **Repositories**
+
+- เลือกบรรทัด `pve-enterprise` แล้วคลิก Disable
+
+    ![repository-1](/img/proxmox/repository-1.png)
+
+### เพิ่ม No-Subscription Repository
+
+- คลิก **Add** ในส่วน APT Repositories
+
+  ![repository-2](/img/proxmox/repository-2.png)
+
+- เลือก **No-Subscription** แล้วคลิก **Add**
+
+  ![repository-3](/img/proxmox/repository-3.png)
+
+### อัปเดตรายการแพ็คเกจ
+
+- ไปที่เมนู Updates
+
+- คลิก Refresh เพื่อโหลดรายการอัปเดตล่าสุด
+
+  ![repository-4](/img/proxmox/repository-4.png)
+
+- รอจนกว่าระบบจะโหลดรายการอัปเดตเสร็จสิ้น
+
+  ![repository-5](/img/proxmox/repository-5.png)
+
+- กดปุ่ม **Esc** เพื่อปิดหน้าต่างแสดงผล
+
+### อัปเกรดแพ็คเกจ
+
+- คลิก Upgrade เพื่อเริ่มกระบวนการอัปเกรด
+
+  ![repository-6](/img/proxmox/repository-6.png)
+
+- ในหน้าต่างที่ปรากฏขึ้น ให้พิมพ์ Y แล้วกด Enter เพื่อยืนยันการอัปเกรด
+
+  ![repository-7](/img/proxmox/repository-7.png)
+
+- รอจนกว่ากระบวนการอัปเกรดจะเสร็จสมบูรณ์
+
+### รีบูตระบบ
+
+หลังจากอัปเกรดเสร็จ ระบบจะแนะนำให้รีบูตเครื่อง เพื่อให้ Kernel เวอร์ชันใหม่ทำงาน
+
+</Steps>
+

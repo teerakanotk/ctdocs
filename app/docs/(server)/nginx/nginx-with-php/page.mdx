@@ -1,0 +1,99 @@
+---
+title: Nginx with PHP
+---
+
+# การติดตั้งและตั้งค่า NGINX ร่วมกับ PHP-FPM บน Ubuntu
+
+## ติดตั้ง PHP-FPM
+
+```bash
+sudo apt update
+sudo apt install php-fpm
+```
+
+## ลบ default site ของ NGINX
+
+```bash
+sudo rm -f /etc/nginx/sites-enabled/default
+```
+
+## ตั้งค่า NGINX ให้รองรับไฟล์ .php
+
+### สร้างไฟล์คอนฟิกใหม่
+
+```bash
+sudo nano /etc/nginx/sites-available/<your_site_name>
+```
+
+### คัดลอกและวางไฟล์คอนฟิกเริ่มต้น (Starter Config)
+
+```bash
+server {
+    listen 80;
+    
+    # set default directory
+    root /var/www/html;
+    index index.php index.html index.htm;
+
+    # addintional config here
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+```
+
+### สร้าง symbolic link ไปยัง `sites-enabled`
+
+```bash
+sudo ln -s /etc/nginx/sites-available/<your_site_name> /etc/nginx/sites-enabled/
+```
+
+> การสร้าง symbolic link นี้ทำให้ NGINX โหลดไฟล์คอนฟิกนั้นเมื่อเริ่มทำงาน
+
+### ตรวจสอบว่าไฟล์ถูกลิงก์เรียบร้อย
+
+```bash
+sudo ls -la /etc/nginx/sites-enabled/
+```
+
+หากเห็นชื่อไฟล์ที่สร้างลิงก์ไว้ และเป็นสีฟ้า (หากใช้ Terminal ที่รองรับสี) แสดงว่าทำถูกต้องแล้ว
+
+### ตรวจสอบความถูกต้องของคอนฟิก
+
+```bash
+sudo nginx -t
+```
+
+หากขึ้นผลลัพธ์ว่า:
+
+```
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+### รีโหลด NGINX เพื่อใช้คอนฟิกใหม่
+
+```bash
+sudo systemctl reload nginx
+```
+
+## โฟลเดอร์เว็บไซต์เริ่มต้น (Default Web Directory)
+
+```bash
+cd /var/www/html
+```
+
+คุณสามารถเก็บไฟล์เว็บไว้ในนี้ เช่น:
+
+- index.html (สำหรับหน้าเว็บแบบ static)
+
+- index.php (สำหรับหน้าเว็บที่ต้องประมวลผล PHP)

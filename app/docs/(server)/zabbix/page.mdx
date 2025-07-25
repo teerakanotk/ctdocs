@@ -1,0 +1,150 @@
+---
+title: Zabbix
+asIndexPage: true
+---
+
+import { Steps } from 'nextra/components'
+
+# Zabbix
+
+Zabbix เป็นซอฟต์แวร์โอเพนซอร์สสำหรับการมอนิเตอร์ระบบไอที (IT Infrastructure Monitoring) ที่ช่วยให้สามารถติดตามประสิทธิภาพและสถานะของอุปกรณ์ต่าง ๆ เช่น เซิร์ฟเวอร์, อุปกรณ์เครือข่าย, เครื่องเสมือน และแอปพลิเคชัน ได้แบบเรียลไทม์
+
+## คุณสมบัติเด่น
+
+- รองรับการมอนิเตอร์ระบบทั้งแบบ Agent, SNMP, JMX และ API
+
+- แสดงข้อมูลผ่านกราฟและแดชบอร์ดที่ปรับแต่งได้
+
+- ส่งการแจ้งเตือนได้หลายช่องทาง เช่น Email, SMS, Line Notify, Telegram และ Slack
+
+- รองรับการเก็บข้อมูลย้อนหลังเพื่อการวิเคราะห์และคาดการณ์
+
+- ใช้งานฟรีภายใต้เงื่อนไขของโอเพนซอร์ส (Open Source License)
+
+## วิธีติดตั้ง Zabbix 7.0 LTS บน Ubuntu 24.04
+
+<Steps>
+
+### อัปเดตระบบ
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+### เพิ่ม Zabbix Repository
+
+```bash
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix/release_latest_7.0+ubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo apt update
+```
+
+### ติดตั้ง Zabbix Server, Frontend และ Agent2
+
+```bash
+sudo apt install zabbix-server-pgsql zabbix-frontend-php php8.3-pgsql zabbix-nginx-conf zabbix-sql-scripts zabbix-agent2
+```
+
+### ติดตั้ง Plugins สำหรับ Zabbix Agent2
+
+```bash
+sudo apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+```
+
+### ติดตั้งและตั้งค่า PostgreSQL
+
+ติดตั้ง PostgreSQL:
+
+```bash
+sudo apt install postgresql
+```
+
+สร้างผู้ใช้และฐานข้อมูล:
+
+```bash
+sudo -u postgres createuser --pwprompt zabbix
+sudo -u postgres createdb -O zabbix zabbix
+```
+
+นำเข้าข้อมูลเริ่มต้น:
+
+```bash
+zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix
+```
+
+### แก้ไขไฟล์คอนฟิก Zabbix Server
+
+```bash
+sudo nano /etc/zabbix/zabbix_server.conf
+```
+
+ค้นหาบรรทัด `DBPassword=` และแก้ไขให้ตรงกับรหัสผ่านของผู้ใช้ zabbix ที่ตั้งไว้
+
+```bash filename="/etc/zabbix/zabbix_server.conf"
+### Option: DBPassword
+#       Database password.
+#       Comment this line if no password is used.
+#
+# Mandatory: no
+# Default:
+DBPassword=<your_db_password>
+```
+
+### ลบ Default Site ของ Nginx
+
+```bash
+sudo rm /etc/nginx/sites-enabled/default
+```
+
+### รีสตาร์ทและเปิดใช้งาน Service ที่เกี่ยวข้อง
+
+```bash
+systemctl restart zabbix-server zabbix-agent2 postgresql nginx php8.3-fpm
+systemctl enable zabbix-server zabbix-agent2 postgresql nginx php8.3-fpm
+```
+
+</Steps>
+
+## เข้าสู่ Zabbix Web Interface
+
+เปิดเบราว์เซอร์และไปที่ `http://<IP_ADDRESS>`
+
+## ขั้นตอนการตั้งค่าเบื้องต้นผ่าน Web Interface
+
+เมื่อเข้าครั้งแรก จะเข้าสู่หน้าจอ Wizard ดังนี้:
+
+- คลิก Next step
+
+    ![install-1](/img/zabbix/install-1.png)
+
+- ตรวจสอบความพร้อมของระบบ หากทุกอย่างปกติ คลิก Next step
+
+    ![install-2](/img/zabbix/install-2.png)
+
+- ป้อนข้อมูลฐานข้อมูล โดยใช้ชื่อผู้ใช้ zabbix และรหัสผ่านที่ตั้งไว้ แล้วคลิก Next step
+
+    ![install-3](/img/zabbix/install-3.png)
+
+- เลือก Timezone แล้วคลิก Next step
+
+    ![install-4](/img/zabbix/install-4.png)
+
+- ตรวจสอบสรุปการตั้งค่า แล้วคลิก Next step
+
+    ![install-5](/img/zabbix/install-5.png)
+
+- เมื่อสำเร็จ คลิก Finish
+
+    ![install-6](/img/zabbix/install-6.png)
+
+- เข้าสู่ระบบครั้งแรก
+
+    - Username: `Admin`
+    - Password: `zabbix`
+
+    ![install-7](/img/zabbix/install-7.png)
+
+- เข้าสู่หน้า Dashboard
+
+    ![install-8](/img/zabbix/install-8.png)
