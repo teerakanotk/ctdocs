@@ -15,4 +15,5 @@ export default withNextra({
       permanent: true,
     },
   ],
+  output: "standalone",
 });
