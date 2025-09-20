@@ -1,4 +1,20 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import nextra from 'nextra';
 
-export default nextConfig;
+// Set up Nextra with its configuration
+const withNextra = nextra({
+  // ... Add Nextra-specific options here
+  defaultShowCopyCode: true,
+  search: { codeblocks: false },
+});
+
+// Export the final Next.js config with Nextra included
+export default withNextra({
+  // ... Add regular Next.js options here
+  redirects: async () => [
+    {
+      source: '/',
+      destination: '/docs',
+      permanent: true,
+    },
+  ],
+});

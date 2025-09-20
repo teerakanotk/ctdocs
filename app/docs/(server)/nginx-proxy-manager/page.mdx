@@ -1,0 +1,122 @@
+---
+title: Nginx Proxy Manager
+asIndexPage: true
+---
+
+import { Steps } from 'nextra/components';
+
+# Nginx Proxy Manager
+
+เครื่องมือบริหารจัดการ reverse proxy แบบ Web-based GUI ที่พัฒนาโดยใช้ Nginx อยู่เบื้องหลัง เหมาะสำหรับผู้ใช้งานที่ต้องการตั้งค่า reverse proxy อย่างง่าย โดยไม่ต้องแก้ไขไฟล์คอนฟิกด้วยตนเอง
+
+- จัดการ domain/subdomain ได้หลายรายการผ่านอินเทอร์เฟซเดียว
+- รองรับ SSL Certificate ฟรีจาก Let's Encrypt
+- ตั้งค่า port forwarding, redirect และ custom header ได้
+- รองรับการกำหนด Access Control และการจำกัด IP
+- สามารถใช้งานผ่าน Docker ได้สะดวก
+- อินเทอร์เฟซแบบกราฟิกที่ใช้งานง่าย ไม่จำเป็นต้องใช้คำสั่ง CLI
+
+## สิ่งที่ต้องเตรียม
+
+- Docker engine
+
+> หากยังไม่ได้ติดตั้ง Docker สามารถดูขั้นตอนการติดตั้งได้ที่ [Docker](/docs/docker)
+
+## ขั้นตอนการติดตั้ง
+
+<Steps>
+
+### สร้างโฟลเดอร์สำหรับเก็บไฟล์โปรเจกต์
+
+```bash
+mkdir nginx-proxy-manager
+cd nginx-proxy-manager
+```
+
+### สร้างไฟล์ `docker-compose.yml`
+
+```bash
+sudo nano docker-compose.yml
+```
+
+```bash filename="~/nginx-proxy-manager/docker-compose.yml"
+services:
+  app:
+    container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 81:81 # Admin panel
+      - 443:443
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+```
+
+### รัน Nginx Proxy Manager
+
+```bash
+sudo docker compose up -d
+```
+
+ระบบจะดาวน์โหลด Image และรัน Container โดยอัตโนมัติ
+
+```bash
+root@ubuntu:~/nginx-proxy-manager# sudo docker compose up -d
+[+] Running 36/36
+ ✔ app Pulled                                               49.0s
+[+] Running 2/2
+ ✔ Network nginx-proxy-manager_default  Created             0.1s
+ ✔ Container nginx-proxy-manager        Started             0.4s
+```
+
+### ตรวจสอบสถานะ Container
+
+```bash
+sudo docker ps
+```
+
+```bash
+root@ubuntu:~/nginx-proxy-manager# sudo docker ps
+CONTAINER ID   IMAGE                             COMMAND   CREATED         STATUS         PORTS                                                                                      NAMES
+1fcf72aaec1e   jc21/nginx-proxy-manager:latest   "/init"   2 minutes ago   Up 2 minutes   0.0.0.0:80-81->80-81/tcp, [::]:80-81->80-81/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp   nginx-proxy-manager
+```
+
+</Steps>
+
+## เข้าสู่ระบบ Dashboard
+
+1. เปิดเบราว์เซอร์และเข้าไปที่ `http://<IP_ADDRESS>:81`
+
+2. ล็อกอินด้วยข้อมูลเริ่มต้น
+
+   - Email: `admin@example.com`
+   - Password: `changeme`
+
+   > ระบบจะขอให้คุณเปลี่ยนอีเมลและรหัสผ่านทันทีในการเข้าสู่ระบบครั้งแรก
+
+   ![img-1](/images/nginx-proxy-manager/img-1.png)
+
+## การตั้งค่าเบื้องต้น
+
+- ไปที่เมนู Settings > คลิกที่จุดสามจุด (⋮) > เลือก Edit
+
+  ![img-2](/images/nginx-proxy-manager/img-2.png)
+
+- ที่หัวข้อ Default Site, เลือก No Response (444) แล้วคลิก Save
+
+  ![img-3](/images/nginx-proxy-manager/img-3.png)
+
+---
+
+การตั้งค่า Default Site ใช้สำหรับกำหนดพฤติกรรมเมื่อมีการเข้าถึงเซิร์ฟเวอร์โดยไม่ระบุ Hostname อย่างถูกต้อง เช่น:
+
+    - ผู้ใช้เข้าผ่าน IP ตรง ๆ
+    - โดเมนที่ยังไม่มีการกำหนด Reverse Proxy
+
+การเลือก “No Response (444)” จะทำให้ระบบตัดการเชื่อมต่อทันทีโดยไม่แสดงข้อความใด ๆ เพิ่มความปลอดภัยจากการสแกนพอร์ตหรือการเข้าถึงโดยไม่ได้รับอนุญาต
+
+---
+
+Ref: https://nginxproxymanager.com/guide/
