@@ -16,23 +16,25 @@ title: DNS Zone
 | **Reverse Lookup Zone** | โซนสำหรับแปลง IP Address ให้เป็นชื่อโดเมน (ตรงข้ามกับปกติ)                                | ใช้ในกรณีที่ต้องตรวจสอบว่า IP Address ใดสื่อถึงชื่อโดเมนใด (ผ่าน PTR Record)            |
 | **Forward Lookup Zone** | โซนมาตรฐานที่ใช้แปลงชื่อโดเมนให้เป็น IP Address                                           | ใช้สำหรับการเข้าถึงเว็บไซต์, อีเมล, หรือบริการต่าง ๆ บนอินเทอร์เน็ต                     |
 
-## ขั้นตอนการกำหนดค่า Forward zone
+## ขั้นตอนการกำหนดค่า Zone
 
 - ไปที่เมนู **Zones**
+
+  ![zone-1](/images/technitium-dns/zone-1.png)
+
+### Forward zone
+
 - คลิก **Add Zone**
-
-  ![img-6](/images/technitium-dns/img-6.png)
-
 - **Zone:** ระบุชื่อโซนที่ต้องการสร้าง เช่น `ctsurin.local`
 - **Type:** เลือก `Primary Zone`
 - **Zone Serial:** เลือก `Use SOA Serial Date Scheme`
 - เสร็จแล้วคลิก **Add**
 
-  ![img-7](/images/technitium-dns/img-7.png)
+  ![add-forward-zone-1](/images/technitium-dns/add-forward-zone-1.png)
 
 - หลังจากสร้างโซนแล้ว จะพบหน้าเว็บเพจดังภาพ
 
-  ![img-8](/images/technitium-dns/img-8.png)
+  ![add-forward-zone-2](/images/technitium-dns/add-forward-zone-2.png)
 
 ### เพิ่ม A Record สำหรับ Primary DNS Server
 
@@ -43,15 +45,14 @@ title: DNS Zone
   - **IPv4 Address:** ระบุ IP Address เช่น `10.11.254.10`
   - เสร็จแล้วคลิก **Save**
 
-    ![img-9](/images/technitium-dns/img-9.png)
+    ![add-forward-record-1](/images/technitium-dns/add-forward-record-1.png)
 
 หลังจากเพิ่ม record เรียบร้อยแล้ว จะแสดงรายการในหน้าโซนดังกล่าว
 
-![img-10](/images/technitium-dns/img-10.png)
+![add-forward-record-2](/images/technitium-dns/add-forward-record-2.png)
 
-## ขั้นตอนการกำหนดค่า Reverse zone
+### Reverse zone
 
-- ไปที่เมนู **Zones**
 - คลิก **Add Zone**
 
   - **Zone:** ระบุชื่อโซนที่ต้องการสร้าง CIDR เช่น `10.11.254.0/24`
@@ -59,11 +60,11 @@ title: DNS Zone
   - **Zone Serial:** เลือก `Use SOA Serial Date Scheme`
   - เสร็จแล้วคลิก **Add**
 
-    ![img-11](/images/technitium-dns/img-11.png)
+    ![add-reverse-zone-1](/images/technitium-dns/add-reverse-zone-1.png)
 
 - หลังจากสร้างโซนแล้ว จะพบหน้าเว็บเพจดังภาพ
 
-  ![img-12](/images/technitium-dns/img-12.png)
+  ![add-reverse-zone-2](/images/technitium-dns/add-reverse-zone-2.png)
 
 ### เพิ่ม PTR record ของ Primary name server
 
@@ -86,11 +87,11 @@ title: DNS Zone
 - **Domain Name:** `ระบุชื่อ FQDN ของ Primary name server`
 - เสร็จแล้วคลิก **Save**
 
-  ![img-13](/images/technitium-dns/img-13.png)
+  ![add-reverse-zone-1](/images/technitium-dns/add-reverse-zone-1.png)
 
 - หลังจากเพิ่ม record เรียบร้อยแล้ว จะแสดงรายการในหน้าโซนดังกล่าว
 
-![img-14](/images/technitium-dns/img-14.png)
+![add-reverse-zone-2](/images/technitium-dns/add-reverse-zone-2.png)
 
 ## ทดสอบการทำงาน
 

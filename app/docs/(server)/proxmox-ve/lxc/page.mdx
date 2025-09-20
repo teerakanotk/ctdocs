@@ -13,13 +13,13 @@ import { Steps } from 'nextra/components';
 - เปิดเว็บเบราว์เซอร์และเข้าสู่หน้าเว็บ `https://<IP_ADDRESS>:8006`
 - ไปที่เมนู **Datacenter** > **Node** > **local** > **CT Templates**
 
-  ![img-16](/images/proxmox-ve/img-16.png)
+  ![lxc-template-1](/images/proxmox-ve/lxc-template-1.png)
 
 - คลิก **Templates** ที่ด้านบนของหน้า
 - เลือกเทมเพลตที่ต้องการใช้งาน แล้วคลิก **Download**
 - เมื่อดาวน์โหลดเสร็จ เทมเพลตจะปรากฏในรายการ
 
-  ![img-17](/images/proxmox-ve/img-17.png)
+  ![lxc-template-2](/images/proxmox-ve/lxc-template-2.png)
 
 ## ขั้นตอนการสร้าง LXC Container
 
@@ -29,7 +29,7 @@ import { Steps } from 'nextra/components';
 
 ### คลิก Create CT
 
-![img-18](/images/proxmox-ve/img-18.png)
+![create-lxc-1](/images/proxmox-ve/create-lxc-1.png)
 
 ### กรอกข้อมูลพื้นฐาน
 
@@ -41,7 +41,7 @@ import { Steps } from 'nextra/components';
 - **SSH public key:** อัปโหลด SSH Key (ถ้ามี)
 - คลิก Next
 
-  ![img-19](/images/proxmox-ve/img-19.png)
+  ![create-lxc-2](/images/proxmox-ve/create-lxc-2.png)
 
 ### เลือกเทมเพลต
 
@@ -49,7 +49,7 @@ import { Steps } from 'nextra/components';
 - **Template:** เลือกเทมเพลตที่ต้องการใช้งาน
 - คลิก Next
 
-  ![img-20](/images/proxmox-ve/img-20.png)
+  ![create-lxc-3](/images/proxmox-ve/create-lxc-3.png)
 
 ### กำหนดขนาดพื้นที่เก็บข้อมูล
 
@@ -57,14 +57,14 @@ import { Steps } from 'nextra/components';
 - **Disk size (GiB):** กำหนดขนาดพื้นที่จัดเก็บข้อมูล
 - คลิก Next
 
-  ![img-21](/images/proxmox-ve/img-21.png)
+  ![create-lxc-4](/images/proxmox-ve/create-lxc-4.png)
 
 ### CPU
 
 - **Cores:** ระบุจำนวน CPU ที่ต้องการใช้งาน
 - คลิก Next
 
-  ![img-22](/images/proxmox-ve/img-22.png)
+  ![create-lxc-5](/images/proxmox-ve/create-lxc-5.png)
 
 ### Memory
 
@@ -72,7 +72,7 @@ import { Steps } from 'nextra/components';
 - **Swap (MiB):** แนะนำให้ตั้งค่าขนาด Swap เท่ากับหรือครึ่งหนึ่งของ RAM (ไม่ควรเกิน 8 GB)
 - คลิก Next
 
-  ![img-23](/images/proxmox-ve/img-23.png)
+  ![create-lxc-6](/images/proxmox-ve/create-lxc-6.png)
 
 ### Network
 
@@ -86,7 +86,7 @@ import { Steps } from 'nextra/components';
 - **Gateway (IPv4):** ระบุ Default Gateway (เช่น 192.168.0.1)
 - คลิก Next
 
-  ![img-24](/images/proxmox-ve/img-24.png)
+  ![create-lxc-7](/images/proxmox-ve/create-lxc-7.png)
 
 ### DNS
 
@@ -94,18 +94,18 @@ import { Steps } from 'nextra/components';
 - **DNS servers:** ระบุ IP Address ของ DNS Server (เช่น 192.168.1.10, 192.168.1.11) หรือปล่อยให้เป็นค่าเริ่มต้น
 - คลิก Next
 
-  ![img-25](/images/proxmox-ve/img-25.png)
+  ![create-lxc-8](/images/proxmox-ve/create-lxc-8.png)
 
 ### Confirm
 
 ตรวจสอบค่าที่ตั้งไว้ทั้งหมด หากถูกต้อง คลิก **Finish**
 
-![img-26](/images/proxmox-ve/img-26.png)
+![create-lxc-9](/images/proxmox-ve/create-lxc-9.png)
 
 ### เสร็จสิ้น
 
 ระบบจะแสดงสถานะ "TASK OK" เมื่อสร้างเสร็จสมบูรณ์
 
-![img-27](/images/proxmox-ve/img-27.png)
+![create-lxc-10](/images/proxmox-ve/create-lxc-10.png)
 
 </Steps>

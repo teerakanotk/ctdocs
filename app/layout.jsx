@@ -40,7 +40,6 @@ export default async function RootLayout({ children }) {
         <Layout
           navbar={navbar}
           pageMap={await getPageMap()}
-          sidebar={{ autoCollapse: true }}
           docsRepositoryBase="https://github.com/teerakanotk/ctdocs/tree/main"
           footer={footer}
           // ... Your additional layout options
