@@ -1,27 +1,18 @@
-function sortObjectByKey(obj) {
-  return Object.fromEntries(
-    Object.entries(obj).sort(([a], [b]) => a.localeCompare(b))
-  );
-}
+import { sortObjectByKey } from "@/lib/sort";
 
-const serverItems = {
-  'proxmox-ve': {},
-  zabbix: {},
-  'technitium-dns': {},
-  'nginx-proxy-manager': {},
-  docker: {},
+const sortItems = {
+  server: {},
+  firewall: {},
+  switch: {},
+  "access-point": {},
 };
 
 export default {
   docs: {
-    title: 'Documentation',
-    type: 'page',
+    title: "Documentation",
+    type: "page",
     items: {
-      _: {
-        title: 'Server',
-        type: 'separator',
-      },
-      ...sortObjectByKey(serverItems),
+      ...sortObjectByKey(sortItems),
     },
   },
 };
