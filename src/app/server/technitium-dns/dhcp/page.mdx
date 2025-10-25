@@ -1,0 +1,59 @@
+---
+title: DHCP - Technitium DNS
+sidebarTitle: DHCP
+---
+
+# DHCP (Dynamic Host Configuration Protocol)
+
+เป็นโปรโตคอลที่ใช้ในการกำหนดค่าการเชื่อมต่อเครือข่ายให้กับอุปกรณ์ต่าง ๆ (เช่น คอมพิวเตอร์ สมาร์ทโฟน หรืออุปกรณ์อื่น ๆ) โดยอัตโนมัติ เช่น:
+
+- IP Address - หมายเลข IP ที่จะใช้ในการเชื่อมต่อกับเครือข่าย
+- Subnet Mask - กำหนดขอบเขตของเครือข่าย
+- Default Gateway - ใช้สำหรับการติดต่อกับเครือข่ายอื่น ๆ ที่อยู่นอกเครือข่ายท้องถิ่น
+- DNS Servers - สำหรับการแปลงชื่อโดเมน (domain names) เป็นหมายเลข IP
+
+การใช้ DHCP ช่วยลดภาระในการตั้งค่าระบบเครือข่าย โดยเฉพาะในกรณีที่มีอุปกรณ์จำนวนมาก เนื่องจากไม่ต้องกำหนดค่า IP แบบแมนนวลทีละเครื่อง
+
+## ตัวอย่างการกำหนดค่า DHCP Scopes
+
+### 1. ไปที่เมนู DHCP > เลือกแท็บ Scopes
+
+![dhcp-1](/images/technitium-dns/dhcp-1.png)
+
+### 2. คลิกปุ่ม Add scope
+
+![dhcp-scope-1](/images/technitium-dns/dhcp-scope-1.png)
+
+### 3. กรอกรายละเอียดดังนี้
+
+- Name: ชื่อของ Scope
+- Starting Address: ที่อยู่ IP เริ่มต้นในช่วงที่จะใช้สำหรับการแจกจ่าย
+- Ending Address: ที่อยู่ IP สุดท้ายในช่วงที่จะใช้สำหรับการแจกจ่าย
+- Subnet Mask: ระบุขอบเขตของเครือข่าย
+- Lease Time: ระยะเวลาที่อุปกรณ์จะได้รับการจองที่อยู่ IP ก่อนที่จะต้องร้องขอใหม่
+
+![dhcp-scope-2](/images/technitium-dns/dhcp-scope-2.png)
+
+- Ping Check: ✅ Enable Ping Check
+
+![dhcp-scope-3](/images/technitium-dns/dhcp-scope-3.png)
+
+- Domain Name: กรอกชื่อโดเมนที่ต้องการใช้งาน
+- Domain Search List: ระบุชื่อโดเมนหรือรายการโดเมนที่ต้องการใช้สำหรับการค้นหาอัตโนมัติ
+
+![dhcp-scope-6](/images/technitium-dns/dhcp-scope-6.png)
+
+- Router Address: ที่อยู่ของเกตเวย์ในเครือข่าย
+- DNS Servers:
+  - ยกเลิกการเลือก "Use This DNS Server"
+  - จากนั้นระบุหมายเลข IP ของ DNS Server ที่ต้องการใช้งาน
+
+![dhcp-scope-4](/images/technitium-dns/dhcp-scope-4.png)
+
+- กรอกข้อมูลเสร็จแล้ว เลื่อนลงไปด้านล่างสุดแล้วกด Save
+
+![dhcp-scope-5](/images/technitium-dns/dhcp-scope-5.png)
+
+---
+
+หลังจากกำหนดค่า DHCP Scope เรียบร้อย ให้ดำเนินการกำหนดค่า DHCP Relay บนอุปกรณ์ Gateway (เช่น Router หรือ Firewall) โดยกำหนดชี้ไปที่ IP Address ของเซิร์ฟเวอร์ Technitium DNS ที่ทำหน้าที่เป็น DHCP Server

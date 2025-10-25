@@ -1,0 +1,51 @@
+---
+title: Notification via Telegram - Zabbix
+sidebarTitle: Telegram
+---
+
+import { Steps } from "nextra/components";
+
+# Notification via Telegram
+
+## ขั้นตอนการสร้าง Telegram Bot
+
+1. ไปที่ [Telegram](https://web.telegram.org/a/) และล็อกอินเข้าสู่บัญชี Telegram ของคุณ (ถ้ายังไม่มีบัญชี ให้สมัครก่อน)
+2. เพิ่ม BotFather เป็นเพื่อน โดยค้นหา [@BotFather](https://telegram.me/BotFather) ในแถบค้นหาของ Telegram จากนั้นกด `START` เพื่อเริ่มต้นการใช้งาน BotFather
+
+![zabbix-notification-telegram-1](/images/zabbix/notification-telegram-1.png)
+
+3. พิมพ์คำสั่ง `/newbot` ในแชทกับ `BotFather` เพื่อสร้างบอทใหม่
+
+![zabbix-notification-telegram-2](/images/zabbix/notification-telegram-2.png)
+
+4. `BotFather` จะขอให้คุณตั้งชื่อสำหรับบอทใหม่ (ตัวอย่างเช่น `Zabbix`)
+
+![zabbix-notification-telegram-3](/images/zabbix/notification-telegram-3.png)
+
+5. หลังจากนั้น `BotFather` จะขอให้ตั้ง Username สำหรับบอท โดยชื่อจะต้องไม่ซ้ำกับบอทอื่น และต้องลงท้ายด้วยคำว่า `bot` (เช่น `ctsurin_bot`)
+
+![zabbix-notification-telegram-4](/images/zabbix/notification-telegram-4.png)
+
+6. เมื่อสร้างบอทเสร็จ จะได้รับ `Token to access HTTP API` สำหรับใช้ในขั้นตอนสุดท้าย
+
+![zabbix-notification-telegram-5](/images/zabbix/notification-telegram-5.png)
+
+7. ไปที่แชทของบอทที่สร้างขึ้น และพิมพ์คำสั่ง `/start` เพื่อเริ่มต้นการใช้งานบอท
+
+![zabbix-notification-telegram-6](/images/zabbix/notification-telegram-6.png)
+
+## ขั้นตอนการขอ ChatID จาก `@IDBot`
+
+1. ค้นหา `@IDBot` ใน Telegram และกด `START` เพื่อเริ่มต้นการใช้งาน
+
+![zabbix-notification-telegram-7](/images/zabbix/notification-telegram-7.png)
+
+2. สร้างกลุ่มใหม่ใน Telegram (ตัวอย่างเช่น `Zabbix notification`)
+3. เพิ่มบอท `ctsurin_bot` และ @IDBot เข้าไปในกลุ่มนั้น
+4. ในกลุ่มที่สร้างขึ้น ให้พิมพ์คำสั่ง `/getgroupid@myidbot` เพื่อขอ `GroupID` ของกลุ่ม
+
+![zabbix-notification-telegram-8](/images/zabbix/notification-telegram-8.png)
+
+> หากคำสั่งถูกต้อง `IDBot` จะส่ง GroupID กลับมาให้ในแชทกลุ่ม
+
+## ขั้นตอนการตั้งค่า Zabbix ให้แจ้งเตือนผ่าน Telegram

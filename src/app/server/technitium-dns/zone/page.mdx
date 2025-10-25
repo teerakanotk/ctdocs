@@ -1,0 +1,109 @@
+---
+title: Zone - Technitium DNS
+sidebarTitle: Zone
+---
+
+import { Steps } from "nextra/components";
+
+# Zone
+
+พื้นที่หรือขอบเขตที่ใช้สำหรับจัดการ DNS Records ของโดเมนใดโดเมนหนึ่ง โดยผู้ดูแลระบบสามารถกำหนดและควบคุมการตั้งค่าต่าง ๆ ที่เกี่ยวข้องกับ DNS ภายในโซนนั้นได้ทั้งหมด เช่น การกำหนดชื่อเครื่อง (A Record), การตั้งค่าเมลเซิร์ฟเวอร์ (MX Record), หรือการชี้โดเมนย่อย (CNAME)
+
+| ประเภท              | คำอธิบาย                                                                                  | การใช้งาน                                                                               |
+| ------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Primary Zone        | โซนหลักที่เก็บไฟล์ข้อมูลต้นฉบับของ DNS Records                                            | ใช้เมื่อคุณเป็นผู้ดูแลหรือเจ้าของ DNS Records และต้องการควบคุมทั้งหมดด้วยตัวเอง         |
+| Secondary Zone      | เป็นสำเนาของ Primary Zone แบบอ่านอย่างเดียว (Read-only) ผ่านการ replicate ด้วย DNS (AXFR) | ใช้สำหรับการสำรองข้อมูล, เพิ่มความเสถียร, หรือกระจายโหลดในการให้บริการ DNS              |
+| Stub Zone           | โซนที่มีเฉพาะข้อมูล NS, SOA และ A Records ของเซิร์ฟเวอร์ที่เป็น Authoritative             | ใช้เพื่อระบุว่า DNS Server ที่แท้จริงของโดเมนนั้นอยู่ที่ไหน โดยไม่ต้องเก็บข้อมูลทั้งหมด |
+| Reverse Lookup Zone | โซนสำหรับแปลง IP Address ให้เป็นชื่อโดเมน (ตรงข้ามกับปกติ)                                | ใช้ในกรณีที่ต้องตรวจสอบว่า IP Address ใดสื่อถึงชื่อโดเมนใด (ผ่าน PTR Record)            |
+| Forward Lookup Zone | โซนมาตรฐานที่ใช้แปลงชื่อโดเมนให้เป็น IP Address                                           | ใช้สำหรับการเข้าถึงเว็บไซต์, อีเมล, หรือบริการต่าง ๆ บนอินเทอร์เน็ต                     |
+
+## ขั้นตอนการกำหนดค่า Primary Zone
+
+1. ไปที่เมนู Zones
+
+![zone-1](/images/technitium-dns/zone-1.png)
+
+2. คลิกปุ่ม Add Zone
+3. จากนั้นกำหนดค่ารายละเอียดตามด้านล่าง เสร็จแล้วคลิกปุ่ม Add
+
+```
+Zone: ระบุชื่อโซน
+Type: เลือก Primary Zone (default)
+```
+
+![add-forward-zone-1](/images/technitium-dns/add-forward-zone-1.png)
+
+4. หลังจากสร้างโซนแล้ว จะพบหน้าเว็บเพจดังภาพ
+
+![add-forward-zone-2](/images/technitium-dns/add-forward-zone-2.png)
+
+5. คลิกปุ่ม Add Record
+6. จากนั้นกำหนดค่ารายละเอียดตามด้านล่าง เสร็จแล้วคลิกปุ่ม Save
+
+```
+Name: ระบุชื่อ Primary DNS Server เช่น ns1
+Type: เลือก A
+IPv4 Address: ระบุ IP Address เช่น 10.11.254.10
+```
+
+![add-forward-record-1](/images/technitium-dns/add-forward-record-1.png)
+
+7. หลังจากเพิ่ม record เรียบร้อยแล้ว จะแสดงรายการในหน้าโซนดังกล่าว
+
+![add-forward-record-2](/images/technitium-dns/add-forward-record-2.png)
+
+## ขั้นตอนการกำหนดค่า Reverse zone
+
+1. ไปที่เมนู Zones
+
+![zone-1](/images/technitium-dns/zone-1.png)
+
+2. คลิกปุ่ม Add Zone
+3. จากนั้นกำหนดค่ารายละเอียดตามด้านล่าง เสร็จแล้วคลิกปุ่ม Add
+
+```
+Zone: ระบุ CIDR เช่น 10.11.254.0/24
+Type: เลือก Primary Zone
+```
+
+![add-reverse-zone-1](/images/technitium-dns/add-reverse-zone-1.png)
+
+4. หลังจากสร้างโซนแล้ว จะพบหน้าเว็บเพจดังภาพ
+
+![add-reverse-zone-2](/images/technitium-dns/add-reverse-zone-2.png)
+
+5. คลิกปุ่ม Add Record
+6. กำหนดค่ารายละเอียดตามด้านล่าง เสร็จแล้วคลิกปุ่ม Save
+
+```
+Name: ระบุ Last Octet
+Type: PTR
+Domain Name: ระบุชื่อ FQDN ของ Primary name server
+```
+
+> Last Octet หมายถึง เลขสุดท้ายในส่วนของ IP Address ที่อยู่ในตำแหน่งสุดท้าย (octet ที่ 4) ซึ่งใน IP Address จะประกอบไปด้วย 4 ส่วน (หรือที่เรียกว่า "octets")
+>
+> ตัวอย่าง: 192.168.23.24
+>
+> - First Octet: 192
+> - Second Octet: 168
+> - Third Octet: 23
+> - Four Octet: 24
+>
+> ในที่นี้ Last Octet คือ 24 เพราะเลขสุดท้ายของ IP คือ 24
+
+![add-reverse-record-1](/images/technitium-dns/add-reverse-record-1.png)
+
+7. หลังจากเพิ่ม record เรียบร้อยแล้ว จะแสดงรายการในหน้าโซนดังกล่าว
+
+![add-reverse-record-2](/images/technitium-dns/add-reverse-record-2.png)
+
+## ทดสอบการทำงาน
+
+เมื่อคุณตั้งค่า Zone เสร็จเรียบร้อยแล้ว สามารถทดสอบการทำงานของ DNS Server ได้โดยทำดังนี้
+
+    - ไปที่ Network Adapter ของเครื่องที่ต้องการทดสอบ
+    - ที่ช่อง DNS ให้ตั้งค่าเป็น IP Address ของ DNS Server ที่คุณตั้งค่าไว้
+    - ลองเรียกชื่อโดเมนที่คุณกำหนดใน Zone เพื่อตรวจสอบว่า DNS สามารถแปลชื่อเป็น IP Address ได้ถูกต้องหรือไม่
+
+> หากการตั้งค่าถูกต้อง ระบบจะสามารถตอบกลับ IP Address ตามที่ระบุไว้ใน DNS Record ได้ทันที
