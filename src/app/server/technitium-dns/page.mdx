@@ -1,0 +1,80 @@
+---
+title: Technitium DNS
+asIndexPage: true
+---
+
+import { Steps } from "nextra/components";
+
+# Technitium DNS
+
+เซิร์ฟเวอร์ DNS แบบโอเพนซอร์สที่ใช้งานง่าย มาพร้อมกับแผงควบคุมแบบ Web Interface ที่ช่วยให้คุณจัดการระบบ DNS ได้สะดวก ไม่ว่าจะใช้งานเป็น Authoritative DNS สำหรับควบคุมและบริหารจัดการโซนโดเมนของตัวเอง หรือเป็น Recursive Resolver เพื่อสอบถามข้อมูล DNS จากเซิร์ฟเวอร์ภายนอก
+
+- จัดการ DNS Server ผ่านเว็บอินเตอร์เฟสที่ใช้งานง่าย
+- รองรับการจัดการโซน DNS ของตัวเองอย่างเต็มรูปแบบ
+- ทำหน้าที่เป็น DNS Resolver ที่สามารถสอบถามข้อมูลจากเซิร์ฟเวอร์ภายนอก
+- รองรับการทำงานเป็น DHCP Server เพื่อจัดการการแจกจ่าย IP Address ให้กับอุปกรณ์ในเครือข่าย
+
+> DNS (Domain Name System) คือระบบที่ทำหน้าที่แปลงชื่อเว็บไซต์ที่เราใช้งานกันทั่วไป (เช่น google.com) ให้กลายเป็นหมายเลข IP Address (เช่น 142.250.190.78) ซึ่งเป็นรูปแบบที่คอมพิวเตอร์ใช้ในการสื่อสารและเข้าถึงข้อมูลต่าง ๆ บนอินเทอร์เน็ต
+
+## ขั้นตอนการติดตั้ง
+
+<Steps>
+
+### อัปเดตแพ็กเกจให้เป็นเวอร์ชันล่าสุด
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+### ติดตั้ง Technitium DNS
+
+ใช้สคริปต์ติดตั้งอย่างเป็นทางการจาก https://technitium.com/dns/
+
+```bash
+sudo curl -sSL https://download.technitium.com/dns/install.sh | sudo bash
+```
+
+รอจนกว่าการติดตั้งจะเสร็จสมบูรณ์
+
+</Steps>
+
+## ล็อกอินเข้าสู่ระบบครั้งแรก
+
+- เปิดเว็บเบราว์เซอร์และไปที่ `http://<IP_ADDRESS>:5380`
+- หลังจากเข้าสู่หน้าเว็บเรียบร้อยแล้ว ระบบจะบังคับให้กำหนดรหัสผ่านสำหรับผู้ใช้ `admin`
+
+![setup-1](/images/technitium-dns/setup-1.png)
+
+## การตั้งค่าเบื้องต้น
+
+- ไปที่เมนู Settings > แท็บ General
+
+  - DNS Server Domain: ระบุชื่อ `Fully qualified domain name (FQDN)`
+
+  ![setup-2](/images/technitium-dns/setup-2.png)
+
+  - Zone Defaults: เลือก `Use SOA Serial Date Scheme`
+
+  ![setup-3](/images/technitium-dns/setup-3.png)
+
+- เลื่อนลงมาที่ด้านล่างสุดของหน้า แล้วคลิก Save Settings
+
+---
+
+- ไปที่เมนู Settings > แท็บ Web Service
+
+  - HTTPS Options: คลิกเลือกตามภาพ
+
+    ![setup-4](/images/technitium-dns/setup-4.png)
+
+- เลื่อนลงมาที่ด้านล่างสุดของหน้า แล้วคลิก Save Settings
+
+---
+
+- ไปที่เมนู Settings > แท็บ Proxy & Forwarders
+
+  - Forwarders: ระบุ `DNS Server IP address` ที่ต้องการใช้งาน
+
+    ![setup-5](/images/technitium-dns/setup-5.png)
+
+- เลื่อนลงมาที่ด้านล่างสุดของหน้า แล้วคลิก Save Settings

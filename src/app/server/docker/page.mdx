@@ -1,0 +1,98 @@
+---
+title: Docker
+asIndexPage: true
+---
+
+import { Steps } from "nextra/components";
+
+# Docker คืออะไร?
+
+Docker คือแพลตฟอร์มที่ใช้ในการพัฒนา, จัดส่ง (Delivery) และรันแอปพลิเคชันภายใน Container ซึ่งช่วยให้แอปพลิเคชันทำงานได้อย่างเสถียรและเหมือนกันในทุกสภาพแวดล้อม โดยไม่ต้องกังวลเรื่องระบบปฏิบัติการหรือการติดตั้งซอฟต์แวร์ล่วงหน้า
+
+### ข้อดีของ Docker
+
+- การพัฒนาและการใช้งานจริงจะใช้สภาพแวดล้อม (Environtment) เดียวกัน
+- ช่วยให้การ Deploy แอปพลิเคชันทำได้รวดเร็วขึ้น
+- รองรับการทำงานกับระบบการพัฒนาอัตโนมัติ (Continuous Integration / Continuous Deployment)
+- ช่วยในการพัฒนาแอปพลิเคชันแบบ Microservices
+- สามารถใช้งานได้ทั้งบน Linux, macOS และ Windows
+
+## ขั้นตอนการติดตั้ง Docker บน Ubuntu
+
+<Steps>
+
+### อัปเดตระบบ
+
+อัปเดตแพ็กเกจทั้งหมดให้เป็นเวอร์ชันล่าสุด
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+### ติดตั้งเครื่องมือพื้นฐานและเพิ่ม GPG key ของ Docker
+
+```bash
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+```
+
+### เพิ่ม Docker repository
+
+```bash
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+```
+
+### ติดตั้ง Docker Engine และ Plugins ที่จำเป็น
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+</Steps>
+
+หากติดตั้งเสร็จเรียบร้อยแล้ว คุณสามารถทดสอบว่า Docker ทำงานได้โดยใช้คำสั่ง
+
+```bash
+sudo docker run hello-world
+```
+
+ตัวอย่างผลลัพธ์ที่คุณจะเห็น
+
+```bash
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+e6590344b1a5: Pull complete
+Digest: sha256:ec153840d1e635ac434fab5e377081f17e0e15afab27beb3f726c3265039cfff
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+```
+
+คำสั่งทั้งหมดของ Docker: https://docs.docker.com/reference/cli/docker/

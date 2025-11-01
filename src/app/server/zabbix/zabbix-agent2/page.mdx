@@ -1,0 +1,158 @@
+---
+title: Zabbix Agent 2 - Zabbix
+sidebarTitle: Zabbix Agent 2
+---
+
+import { Steps } from "nextra/components";
+
+# Zabbix Agent 2
+
+Zabbix Agent 2 เป็นเวอร์ชันที่ได้รับการพัฒนาต่อยอดจาก Zabbix Agent แบบเดิม โดยเน้นด้าน ประสิทธิภาพที่ดีขึ้น และ ความยืดหยุ่นสูงกว่าเดิม รองรับการขยายความสามารถผ่านระบบ Plugin ทำให้สามารถเพิ่มฟีเจอร์ใหม่ ๆ ได้อย่างง่ายดายและตรงตามความต้องการของผู้ใช้งาน
+
+## หน้าที่ของ Zabbix Agent
+
+Zabbix Agent (รวมถึง Agent 2) เป็นโปรแกรมที่ติดตั้งบน เซิร์ฟเวอร์ หรือ อุปกรณ์ที่ต้องการมอนิเตอร์ โดยมีหน้าที่หลักในการ รวบรวมข้อมูลระบบ แล้วส่งกลับไปยัง Zabbix Server หรือ Zabbix Proxy เพื่อให้ระบบนำข้อมูลไปใช้ในการวิเคราะห์ แสดงผล และแจ้งเตือนตามเงื่อนไขที่ตั้งค่าไว้
+
+ข้อมูลที่ Agent รวบรวม เช่น:
+
+- การใช้งาน CPU และ RAM
+- พื้นที่ดิสก์
+- สถานะของโปรเซสและบริการ (Processes & Services)
+- ข้อมูลเฉพาะอื่น ๆ ของระบบ
+
+## หลักการทำงานของ Zabbix Agent 2
+
+1. ติดตั้ง Agent บนอุปกรณ์ปลายทาง เช่น เซิร์ฟเวอร์ คอมพิวเตอร์ หรืออุปกรณ์เครือข่ายที่รองรับ
+2. รวบรวมข้อมูลสถานะต่าง ๆ ของระบบ เช่น ปริมาณการใช้งาน CPU, พื้นที่ดิสก์, สถานะของบริการต่าง ๆ
+3. ส่งข้อมูลกลับไปยัง Zabbix Server หรือ Zabbix Proxy ด้วย 2 วิธี:
+
+   - Passive Check: Agent รอให้ Server มาเรียกขอข้อมูล
+   - Active Check: Agent จะส่งข้อมูลไปยัง Server ตามเวลาที่กำหนดไว้
+
+## ขั้นตอนการติดตั้ง Zabbix Agent 2 บน Linux Ubuntu 24.04
+
+สำหรับระบบปฏิบัติการอื่นๆ อ่านได้ที่ https://www.zabbix.com/download
+
+<Steps>
+
+### อัปเดตแพ็คเกจให้เป็นเวอร์ชันล่าสุด
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+### เพิ่ม Zabbix Repository
+
+```bash
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo apt update
+```
+
+### ติดตั้งแพ็คเกจ Zabbix Agent 2
+
+```bash
+sudo apt install zabbix-agent2
+```
+
+### (Optional) หากต้องการมอนิเตอร์ประสิทธิภาพของ Database ควรติดตั้งส่วนเสริมดังกล่าวด้วย
+
+```bash
+sudo apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+```
+
+### แก้ไขไฟล์คอนฟิก
+
+ให้แก้ไขไฟล์คอนฟิก `/etc/zabbix/zabbix-agent2.conf` โดยตั้งค่าหมายเลขไอพีหรือชื่อโฮสต์ของ Zabbix server ในส่วนของ Passive checks เปลี่ยนจาก 127.0.0.1 เป็น IP หรือ Hostname ของ Zabbix server
+
+```bash
+sudo nano /etc/zabbix/zabbix-agent2.conf
+```
+
+สำหรับ Passive checks
+
+```bash
+##### Passive checks related
+
+### Option: Server
+#       List of comma delimited IP addresses, optionally in CIDR notation, or DNS names of Zabbix servers and Zabbix proxies.
+#       Incoming connections will be accepted only from the hosts listed here.
+#       If IPv6 support is enabled then '127.0.0.1', '::127.0.0.1', '::ffff:127.0.0.1' are treated equally
+#       and '::/0' will allow any IPv4 or IPv6 address.
+#       '0.0.0.0/0' can be used to allow any IPv4 address.
+#       Example: Server=127.0.0.1,192.168.1.0/24,::1,2001:db8::/32,zabbix.example.com
+#
+#   If left empty or not set will disable passive checks, and Zabbix agent 2 will not listen on the ListenPort.
+#
+# Mandatory: no
+# Default:
+# Server=
+
+Server=<IP หรือ Hostname ของ Zabbix server>
+```
+
+ตัวอย่าง
+
+```bash
+Server=192.168.0.15
+```
+
+สำหรับโหมด Active checks ให้ข้ามในส่วน Passive checks แล้วไปกำหนดค่าในส่วนดังกล่าว
+
+```bash
+##### Active checks related
+
+### Option: ServerActive
+#       Zabbix server/proxy address or cluster configuration to get active checks from.
+#       Server/proxy address is IP address or DNS name and optional port separated by colon.
+#       Cluster configuration is one or more server addresses separated by semicolon.
+#       Multiple Zabbix servers/clusters and Zabbix proxies can be specified, separated by comma.
+#       More than one Zabbix proxy should not be specified from each Zabbix server/cluster.
+#       If Zabbix proxy is specified then Zabbix server/cluster for that proxy should not be specified.
+#       Multiple comma-delimited addresses can be provided to use several independent Zabbix servers in parallel. Spaces are allowed.
+#       If port is not specified, default port is used.
+#       IPv6 addresses must be enclosed in square brackets if port for that host is specified.
+#       If port is not specified, square brackets for IPv6 addresses are optional.
+#       If this parameter is not specified, active checks are disabled.
+#       Example for Zabbix proxy:
+#               ServerActive=127.0.0.1:10051
+#       Example for multiple servers:
+#               ServerActive=127.0.0.1:20051,zabbix.domain,[::1]:30051,::1,[12fc::1]
+#       Example for high availability:
+#               ServerActive=zabbix.cluster.node1;zabbix.cluster.node2:20051;zabbix.cluster.node3
+#       Example for high availability with two clusters and one server:
+#               ServerActive=zabbix.cluster.node1;zabbix.cluster.node2:20051,zabbix.cluster2.node1;zabbix.cluster2.node2,zabbix.domain
+#
+# Mandatory: no
+# Default:
+# ServerActive=
+
+ServerActive=<IP หรือ Hostname ของ Zabbix server>
+```
+
+ตัวอย่าง
+
+```bash
+ServerActive=192.168.0.15
+```
+
+### รีสตาร์ทเซอร์วิส Zabbix Agent 2
+
+```bash
+sudo systemctl restart zabbix-agent2
+```
+
+</Steps>
+
+## Tips
+
+หากไม่ระบุค่า `Hostname` ในไฟล์ `zabbix_agent2.conf`
+
+```
+Hostname=
+```
+
+Zabbix Agent จะดึงค่า Hostname จากระบบปฏิบัติการ (OS) โดยอัตโนมัติ เช่น:
+
+- หากเครื่องมี Hostname ชื่อว่า `web01`
+- Agent จะส่งชื่อ `web01` ไปยัง Zabbix Server เป็นชื่อ Hostname
