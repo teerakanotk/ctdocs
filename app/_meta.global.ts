@@ -35,10 +35,6 @@ const serverMetadata: Record<string, MetadataItem | string> = {
 
 // --- Main Metadata Configuration --- //
 const metaConfig: Record<string, MetadataItem> = {
-  index: {
-    type: "page",
-    display: "hidden",
-  },
   docs: {
     type: "page",
     title: "Documentation",
