@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const navbar = (
   <Navbar
     logo={<b>CTDOCS</b>}
-    // ... Your additional navbar options
+    projectLink="https://github.com/teerakanotk/ctdocs"
   />
 );
 const footer = <Footer>MIT {new Date().getFullYear()} © CTDOCS.</Footer>;
