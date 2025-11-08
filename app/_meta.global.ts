@@ -50,6 +50,13 @@ const metaConfig: Record<string, MetadataItem> = {
       ...sorted(serverMetadata, "asc"),
     },
   },
+  changelog: {
+    type: "page",
+    title: "Changelog",
+    theme: {
+      copyPage: false,
+    },
+  },
 };
 
 export default metaConfig;
