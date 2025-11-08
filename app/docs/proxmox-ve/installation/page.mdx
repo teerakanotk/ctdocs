@@ -1,0 +1,93 @@
+---
+title: Installation - Proxmox VE
+sidebarTitle: Installation
+---
+
+import { Steps } from "nextra/components";
+
+# Proxmox VE
+
+**Proxmox VE (Virtual Environment)** เป็นแพลตฟอร์มโอเพ่นซอร์สสำหรับบริหารจัดการเซิร์ฟเวอร์เสมือนแบบครบวงจร รองรับทั้งการใช้งาน **Virtual Machines (VMs)** และ **Containers** ผ่านหน้าเว็บที่ใช้งานง่าย
+
+## จุดเด่นของ Proxmox VE
+
+- รันหลายระบบปฏิบัติการ เช่น Windows และ Linux บนเครื่องเดียวกัน
+- สร้างและจัดการ Containers ได้รวดเร็วและใช้ทรัพยากรน้อยกว่าการใช้ VMs
+- มีระบบ Snapshot และ Backup เพื่อปกป้องข้อมูลสำคัญ
+- รองรับ Live Migration ย้าย VM ระหว่างโหนดในคลัสเตอร์ได้โดยไม่ต้องหยุดการทำงาน
+- ทำงานแบบ Cluster สำหรับระบบที่มีหลายโหนด ช่วยเพิ่มความเสถียรและขยายระบบได้ง่าย
+
+ดาวน์โหลดไฟล์ติดตั้ง (ISO) ได้ที่: https://www.proxmox.com/en/downloads
+
+## ขั้นตอนการติดตั้ง Proxmox VE
+
+<Steps>
+
+### เริ่มต้นการติดตั้ง
+
+เมื่อเข้าสู่หน้าต้อนรับ ให้เลือก `Install Proxmox VE` แล้วกด Enter เพื่อเริ่มการติดตั้ง
+
+![install-1](/images/proxmox-ve/install-1.png)
+
+### ยอมรับข้อตกลงการใช้งาน (EULA)
+
+อ่านข้อตกลงการใช้งานให้ครบถ้วน แล้วคลิก `I agree` เพื่อดำเนินการต่อ
+
+![install-2](/images/proxmox-ve/install-2.png)
+
+### เลือกดิสก์สำหรับติดตั้ง
+
+เลือกดิสก์ที่ต้องการใช้ในการติดตั้งระบบ แล้วคลิก `Next`
+
+![install-3](/images/proxmox-ve/install-3.png)
+
+### ตั้งค่าประเทศและเขตเวลา
+
+- **Country:** เลือกประเทศที่คุณอยู่
+- **Time Zone:** ตั้งค่าเขตเวลาให้ตรงกับพื้นที่ของคุณ
+
+เมื่อเสร็จแล้ว คลิก `Next`
+
+![install-4](/images/proxmox-ve/install-4.png)
+
+### ตั้งค่ารหัสผ่านและอีเมลผู้ดูแลระบบ
+
+- **Password:** กำหนดรหัสผ่านสำหรับผู้ดูแลระบบ
+- **Confirm Password:** ยืนยันรหัสผ่านอีกครั้ง
+- **Email:** ใส่อีเมลสำหรับรับการแจ้งเตือนระบบ
+
+จากนั้นคลิก `Next`
+
+![install-5](/images/proxmox-ve/install-5.png)
+
+### กำหนดค่าการเชื่อมต่อเครือข่าย
+
+- **Management Interface:** เลือกอินเทอร์เฟซที่ใช้บริหารจัดการ
+- **Hostname (FQDN):** ตั้งชื่อโฮสต์ในรูปแบบโดเมนเต็ม
+- **IP Address (CIDR):** ระบุ IP Address พร้อม Subnet mask
+- **Gateway:** กำหนด Default gateway
+- **DNS Server:** ระบุ DNS ที่ต้องการใช้
+
+  ![install-6](/images/proxmox-ve/install-6.png)
+
+### ตรวจสอบและเริ่มติดตั้ง
+
+ตรวจสอบการตั้งค่าทั้งหมดให้เรียบร้อย หากถูกต้อง คลิก `Install` เพื่อเริ่มการติดตั้งระบบ
+
+![install-7](/images/proxmox-ve/install-7.png)
+
+</Steps>
+
+## การเข้าสู่ระบบ Proxmox ผ่าน Web Interface
+
+1. เปิดเว็บเบราว์เซอร์ แล้วไปที่ `https://<IP_ADDRESS>:8006`
+
+2. กรอกข้อมูลเพื่อเข้าสู่ระบบ:
+
+   - Username: `root`
+   - Password: รหัสผ่านที่คุณตั้งไว้ตอนติดตั้ง
+   - Realm: เลือก `Linux PAM standard authentication`
+
+3. คลิกปุ่ม `Login` เพื่อเข้าสู่ระบบ
+
+   ![install-8](/images/proxmox-ve/install-8.png)

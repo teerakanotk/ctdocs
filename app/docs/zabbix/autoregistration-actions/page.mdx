@@ -1,0 +1,118 @@
+---
+title: Autoregistration actions - Zabbix
+sidebarTitle: Autoregistration
+---
+
+import { Steps } from "nextra/components";
+
+# Autoregistration actions
+
+Autoregistration Actions เป็นฟีเจอร์ของ Zabbix Server ที่ช่วยให้สามารถ เพิ่ม Host เข้าระบบโดยอัตโนมัติ เมื่อมี Zabbix Agent เชื่อมต่อเข้ามายัง Server หรือ Proxy โดยไม่ต้องเพิ่ม Host ด้วยตนเอง
+
+## หลักการทำงาน
+
+เมื่อ Zabbix Agent เชื่อมต่อกับ Zabbix Server โดยมีการตั้งค่า ServerActive และ HostMetadata ดังนี้:
+
+1. **Zabbix Server** จะตรวจสอบค่า `HostMetadata` ที่ Agent ส่งเข้ามา
+2. หากมีการตั้งค่า **Action** ไว้ในหัวข้อ “Autoregistration Actions” และเงื่อนไขตรงกับ metadata ที่ได้รับ
+3. ระบบจะดำเนินการตามที่กำหนดไว้ในส่วนของ **Operation** เช่น การเพิ่ม Host เข้าในระบบอัตโนมัติ
+
+## ประเภท Agent ที่รองรับ
+
+Autoregistration จะทำงานได้เฉพาะกับ **Zabbix Agent** แบบ **Active** เท่านั้น เนื่องจาก Agent ประเภทนี้จะเป็นฝ่ายเริ่มต้นเชื่อมต่อ (Initiate Connection) ไปยัง Server หรือ Proxy ด้วยตัวเอง
+
+## ขั้นตอนการตั้งค่า Autoregistration สำหรับ Zabbix Agent แบบ Active
+
+### 1. ตั้งค่า Zabbix Agent
+
+บนเครื่องที่ต้องการให้ทำ Autoregistration ให้แก้ไขไฟล์ zabbix_agent2.conf (หรือ zabbix_agentd.conf ถ้าใช้ Agent v1)
+
+```bash
+sudo nano /etc/zabbix/zabbix_agent2.conf
+```
+
+```bash
+ServerActive=<IP หรือ hostname ของ Zabbix Server หรือ Proxy>
+Hostname=<ชื่อที่ต้องการให้แสดงใน Zabbix Server>
+HostMetadata=<คำหรือข้อมูลที่ใช้เป็นเงื่อนไขในการ Autoregistration>
+```
+
+ตัวอย่าง:
+
+```conf
+ServerActive=192.168.1.100
+Hostname=webserver01
+HostMetadata=linux
+```
+
+> หมายเหตุ: ต้องรีสตาร์ท Zabbix Agent หลังจากแก้ไขไฟล์ config
+
+## ตั้งค่า Autoregistration Action บน Zabbix Server
+
+### 1. ไปที่เมนู Alerts > Actions > Autoregistration actions
+
+![auto-registration-1](/images/zabbix/auto-registration-1.png)
+
+### 2. คลิกปุ่ม Create action
+
+![auto-registration-2](/images/zabbix/auto-registration-2.png)
+
+### Action
+
+- Name: ตั้งชื่อ action เช่น Autoregistration. Zabbix servers
+
+  ![auto-registration-3](/images/zabbix/auto-registration-3.png)
+
+- Conditions: เพิ่มเงื่อนไข เช่น
+
+  - Type: `Host metadata`
+  - Operator: `matches`
+  - Value: ระบุค่า `HostMetadata` ให้ตรงกันกับที่ตั้งค่าไว้ใน Agent
+
+    ![auto-registration-4](/images/zabbix/auto-registration-4.png)
+
+### Operations
+
+กำหนดสิ่งที่ Zabbix จะทำเมื่อเงื่อนไขตรง
+
+![auto-registration-6](/images/zabbix/auto-registration-6.png)
+
+- คลิกปุ่ม Add ใต้ส่วน Operations
+- จะมีหน้าต่าง Operation details ปรากฏขึ้น
+
+- ที่ช่อง Operation type ให้เลือกสิ่งที่ต้องการให้ Zabbix ทำ เช่น:
+
+  - Add to host group – นำเครื่องไปไว้ในกลุ่มที่กำหนด
+  - Link to template – ผูกเครื่องเข้ากับเทมเพลตที่ใช้ในการมอนิเตอร์
+
+  ![auto-registration-7](/images/zabbix/auto-registration-7.png)
+
+> คุณสามารถเพิ่มหลาย operations ได้ เช่น ผูกหลาย template หรือใส่หลาย group
+
+ตัวอย่าง:
+
+![auto-registration-8](/images/zabbix/auto-registration-8.png)
+
+### 3. กด Add เพื่อบันทึก
+
+### 4. ตรวจสอบผลลัพธ์ใน Zabbix Server
+
+- ไปที่ Monitoring → Hosts
+- ตรวจสอบว่ามี Host ใหม่ถูกเพิ่มเข้ามาตามที่ตั้งค่าไว้หรือไม่
+- เช็กว่า Host ถูกผูก Template และจัดกลุ่มถูกต้องตาม Action ที่กำหนดไว้หรือไม่
+
+---
+
+### (Optional) กรณีใช้ Zabbix Proxy ในการมอนิเตอร์
+
+1. ไปที่เมนู Alerts > Actions > Autoregistration actions
+2. เลือก Action ที่ต้องการ (หรือสร้างใหม่)
+3. ในส่วน Conditions ให้เพิ่มเงื่อนไขใหม่:
+
+   - Type: `Proxy`
+   - Operator: `equals`
+   - Proxy: เลือกเซิร์ฟเวอร์ Proxy ที่ต้องการตรวจสอบ
+
+![auto-registration-5](/images/zabbix/auto-registration-5.png)
+
+> หมายเหตุ: การเพิ่มเงื่อนไขนี้จะช่วยให้ Action ทำงานเฉพาะกับ Agent ที่เชื่อมต่อผ่าน Proxy ที่ระบุไว้เท่านั้น

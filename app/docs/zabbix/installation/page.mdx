@@ -1,0 +1,190 @@
+---
+title: Installation - Zabbix
+sidebarTitle: Installation
+---
+
+import { Steps } from "nextra/components";
+
+# Zabbix
+
+ซอฟต์แวร์โอเพนซอร์สสำหรับการมอนิเตอร์ระบบไอที (IT Infrastructure Monitoring) ที่ช่วยให้สามารถติดตามประสิทธิภาพและสถานะของอุปกรณ์ต่าง ๆ เช่น เซิร์ฟเวอร์, อุปกรณ์เครือข่าย, เครื่องเสมือน และแอปพลิเคชัน ได้แบบเรียลไทม์
+
+- รองรับการมอนิเตอร์ระบบทั้งแบบ Agent, SNMP, JMX และ API
+- แสดงข้อมูลผ่านกราฟและแดชบอร์ดที่ปรับแต่งได้
+- ส่งการแจ้งเตือนได้หลายช่องทาง เช่น Email, SMS, Line Notify, Telegram และ Slack
+- รองรับการเก็บข้อมูลย้อนหลังเพื่อการวิเคราะห์และคาดการณ์
+- ใช้งานฟรีภายใต้เงื่อนไขของโอเพนซอร์ส (Open Source License)
+
+### ความต้องการของระบบ
+
+สามารถอ่านได้ที่ https://www.zabbix.com/download
+
+## ขั้นตอนการติดตั้ง
+
+<Steps>
+
+### อัปเดตแพ็คเกจให้เป็นเวอร์ชันล่าสุด
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+### เพิ่ม Zabbix Repository
+
+```bash
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo dpkg -i zabbix-release_latest_7.0+ubuntu24.04_all.deb
+sudo apt update
+```
+
+### ติดตั้ง Zabbix server, frontend และ agent2
+
+```bash
+sudo apt install zabbix-server-pgsql zabbix-frontend-php php8.3-pgsql zabbix-nginx-conf zabbix-sql-scripts zabbix-agent2
+```
+
+### ติดตั้งส่วนเสริม (Zabbix agent2)
+
+```bash
+sudo apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+```
+
+### ติดตั้งฐานข้อมูล PostgreSQL
+
+```bash
+sudo apt install postgresql
+```
+
+### เตรียมฐานข้อมูล
+
+สร้างชื่อผู้ใช้ zabbix
+
+```bash
+sudo -u postgres createuser --pwprompt zabbix
+```
+
+สร้างฐานข้อมูลชื่อว่า `zabbix_db` และกำหนดให้ผู้ใช้ `zabbix` เป็นผู้จัดการฐานข้อมูลดังกล่าว
+
+```bash
+sudo -u postgres createdb -O zabbix zabbix_db
+```
+
+### นำเข้าข้อมูลเริ่มต้น
+
+```bash
+zcat /usr/share/zabbix-sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql zabbix_db
+```
+
+### แก้ไขไฟล์คอนฟิก `zabbix_server.conf`
+
+```bash
+sudo nano /etc/zabbix/zabbix_server.conf
+```
+
+แก้ไข DBName และ DBPassword ให้ตรงกันกับที่กำหนดค่าไว้ในขั้นตอนก่อนหน้านี้
+
+```bash filename="/etc/zabbix/zabbix_server.conf" {11,25}
+### Option: DBName
+#       Database name.
+#       If the Net Service Name connection method is used to connect to Oracle database, specify the service name from
+#       the tnsnames.ora file or set to empty string; also see the TWO_TASK environment variable if DBName is set to
+#       empty string.
+#
+# Mandatory: yes
+# Default:
+# DBName=
+
+DBName=zabbix_db
+
+.
+.
+.
+
+### Option: DBPassword
+#       Database password.
+#       Comment this line if no password is used.
+#
+# Mandatory: no
+# Default:
+# DBPassword=
+
+DBPassword=<DB_PASSWORD>
+```
+
+### ลบหน้าเว็บเริ่มต้นของ Nginx
+
+```bash
+sudo rm /etc/nginx/sites-enabled/default
+```
+
+### รีสตาร์ทและเปิดใช้งานเซอร์วิส
+
+```bash
+systemctl restart zabbix-server zabbix-agent2 postgresql nginx php8.3-fpm
+systemctl enable zabbix-server zabbix-agent2 postgresql nginx php8.3-fpm
+```
+
+</Steps>
+
+## การเข้าสู่หน้าการจัดการครั้งแรก (Initial Setup)
+
+หลังจากติดตั้ง Zabbix Server และ Web Interface เสร็จเรียบร้อยแล้ว ให้เปิดเว็บเบราว์เซอร์ แล้วเข้าที่ URL:
+
+```
+http://<IP_ADDRESS>
+```
+
+คุณจะเข้าสู่ขั้นตอน Initial Setup ซึ่งเป็นการตั้งค่าเริ่มต้นของระบบ Zabbix ผ่านหน้าเว็บ
+
+<Steps>
+
+### Welcome
+
+คลิก Next step
+
+![setup-1](/images/zabbix/setup-1.png)
+
+### Check of pre-requisites
+
+ตรวจสอบความพร้อมของระบบ หากสถานะเป็น OK ทั้งหมด คลิก Next step
+
+![setup-2](/images/zabbix/setup-2.png)
+
+### Configure DB connection
+
+ป้อนชื่อผู้ใช้ที่จัดการฐานข้อมูลและรหัสผ่านที่กำหนดไว้ จากนั้นคลิก Next step
+
+![setup-3](/images/zabbix/setup-3.png)
+
+### Settings
+
+เลือก Timezone แล้วคลิก Next step
+
+![setup-4](/images/zabbix/setup-4.png)
+
+### Pre-installation summary
+
+ตรวจสอบการตั้งค่า แล้วคลิก Next step
+
+![setup-5](/images/zabbix/setup-5.png)
+
+### Congratulations
+
+คลิก Finish
+
+![setup-6](/images/zabbix/setup-6.png)
+
+### เข้าสู่ระบบครั้งแรก (Login)
+
+โดยใช้ข้อมูลเข้าสู่ระบบเริ่มต้น:
+
+- Username: `Admin`
+- Password: `zabbix`
+
+  ![setup-7](/images/zabbix/setup-7.png)
+
+### เสร็จสิ้น
+
+![setup-8](/images/zabbix/setup-8.png)
+
+</Steps>

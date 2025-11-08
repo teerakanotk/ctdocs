@@ -1,0 +1,138 @@
+---
+title: Notification via Telegram - Zabbix
+sidebarTitle: Telegram
+---
+
+import { Steps } from "nextra/components";
+
+# Notification via Telegram
+
+<Steps>
+
+## ขั้นตอนการสร้าง Telegram Bot
+
+1. ไปที่ [Telegram](https://web.telegram.org/a/) และล็อกอินเข้าสู่บัญชี Telegram ของคุณ (ถ้ายังไม่มีบัญชี ให้สมัครก่อน)
+2. เพิ่ม [@BotFather](https://telegram.me/BotFather) เป็นเพื่อน โดยค้นหาในแถบค้นหาของ Telegram จากนั้นกด `START` เพื่อเริ่มต้นการใช้งาน
+
+   ![notification-telegram-1](/images/zabbix/notification-telegram-1.png)
+
+3. พิมพ์คำสั่ง `/newbot` ในแชทกับ `BotFather` เพื่อสร้างบอทใหม่
+
+   ![notification-telegram-2](/images/zabbix/notification-telegram-2.png)
+
+4. `BotFather` จะขอให้คุณตั้งชื่อสำหรับบอทใหม่ (ตัวอย่างเช่น `Zabbix`)
+
+   ![notification-telegram-3](/images/zabbix/notification-telegram-3.png)
+
+5. หลังจากนั้น `BotFather` จะขอให้ตั้ง **Username** สำหรับบอท โดยชื่อที่ตั้งต้องไม่ซ้ำกับบอทอื่น และต้องลงท้ายด้วยคำว่า `bot` (เช่น `ctsurin_bot`)
+
+   ![notification-telegram-4](/images/zabbix/notification-telegram-4.png)
+
+6. เมื่อสร้างบอทเสร็จ จะได้รับ `Token to access HTTP API` สำหรับใช้ในขั้นตอน `Media type`
+
+   ![notification-telegram-5](/images/zabbix/notification-telegram-5.png)
+
+## เริ่มต้นใช้งานบอทที่คุณสร้างขึ้น
+
+ไปที่หน้าต่างแชทของบอทที่คุณสร้าง แล้วพิมพ์คำสั่ง `/start` เพื่อเริ่มต้นการใช้งานบอท
+
+![notification-telegram-6](/images/zabbix/notification-telegram-6.png)
+
+## วิธีการขอ ChatID ด้วย `@IDBot` บน Telegram
+
+1. ค้นหา `@IDBot` ใน Telegram และกด `START` เพื่อเริ่มต้นการใช้งาน
+
+   ![notification-telegram-7](/images/zabbix/notification-telegram-7.png)
+
+2. สร้างกลุ่มใหม่ใน Telegram (ตัวอย่างเช่น `Zabbix notification`)
+3. เพิ่มบอท `ctsurin_bot` และ @IDBot เข้าไปในกลุ่มนั้น
+4. ในกลุ่มที่สร้างขึ้น ให้พิมพ์คำสั่ง `/getgroupid@myidbot` เพื่อขอ `GroupID` ของกลุ่ม
+
+   ![notification-telegram-8](/images/zabbix/notification-telegram-8.png)
+
+5. บอทจะตอบกลับพร้อมแสดง Chat ID ของคุณทันที
+
+## เปิดใช้งาน Media type Telegram
+
+1. ไปที่เมนู `Alerts` > `Media types`
+2. เลื่อนหาคำว่า `Telegram` จากนั้นคลิกที่ตัวอักษรสีฟ้า
+
+   ![notification-telegram-9](/images/zabbix/notification-telegram-9.png)
+
+3. ที่หน้าต่าง Media type ให้แก้ไขการตั้งค่าในส่วนของ `api_parse_mode` และ `api_token`
+
+   - **api_parse_mode** = รูปแบบข้อความที่ต้องการส่ง `markdown`, `html`, `markdownv2`
+   - **api_token** = โทเคนที่ขอจาก `BotFather`
+
+   ![notification-telegram-10](/images/zabbix/notification-telegram-10.png)
+
+4. หลังจากตั้งค่าเรียบร้อยแล้ว ให้คลิกปุ่ม `Update` เพื่อบันทึกการตั้งค่า
+5. จากนั้นให้เปิดใช้งาน Media type สำหรับ Telegram โดยคลิกที่ข้อความสีแดงเพื่อเปลี่ยนสถานะจาก `Disable` เป็น `Enabled`
+
+   ![notification-telegram-11](/images/zabbix/notification-telegram-11.png)
+
+## ตั้งค่า Trigger action
+
+1. ไปที่เมนู `Alerts` > `Actions` > `Trigger actions`
+
+   ![notification-telegram-12](/images/zabbix/notification-telegram-12.png)
+
+2. คลิกปุ่ม `Create action` ที่มุมบนขวาของหน้าจอ
+
+   ![notification-telegram-13](/images/zabbix/notification-telegram-13.png)
+
+3. แท็บ Action ตั้งค่าดังนี้
+
+   - Name: ให้กรอกชื่อเพื่อระบุว่า Action นี้มีหน้าที่หรือทำงานเกี่ยวกับอะไร
+   - Conditions: เพิ่มเงื่อนไขที่ต้องการตรวจสอบ
+
+   ![notification-telegram-14](/images/zabbix/notification-telegram-14.png)
+
+4. ไปที่แท็บ `Operations`
+
+   ![notification-telegram-15](/images/zabbix/notification-telegram-15.png)
+
+   - 3.1 หัวข้อ Operations คลิกที่ข้อความตัวอักษรสีฟ้า `Add` จากนั้นจะปรากฏหน้าต่างสำหรับตั้งค่า ให้กำหนดค่าตามที่แสดงในภาพประกอบ
+
+     ![notification-telegram-16](/images/zabbix/notification-telegram-16.png)
+
+   - 3.2 หัวข้อ Recovery operations คลิกที่ข้อความตัวอักษรสีฟ้า `Add` จากนั้นจะปรากฏหน้าต่างสำหรับตั้งค่า ให้ตั้งค่ารายการในหัวข้อนี้เหมือนกับที่ตั้งไว้ในหัวข้อ Operations
+
+     ![notification-telegram-17](/images/zabbix/notification-telegram-17.png)
+
+5. หลังจากตั้งค่าเรียบร้อยแล้ว คลิกปุ่ม `Add` เพื่อบันทึกการตั้งค่า
+
+   ![notification-telegram-18](/images/zabbix/notification-telegram-18.png)
+
+6. ตรวจสอบสถานะของ Trigger actions จะต้องเป็น `Enabled`
+
+   ![notification-telegram-19](/images/zabbix/notification-telegram-19.png)
+
+### ขั้นตอนการผูก Media type กับ Users
+
+1. ไปที่เมนู **Users** > **Users**
+2. คลิกเลือก User ที่ต้องการผูก Media type
+
+   ![notification-telegram-20](/images/zabbix/notification-telegram-20.png)
+
+3. หลังจากนั้นคลิกที่แท็บ **Media**
+
+   ![notification-telegram-21](/images/zabbix/notification-telegram-21.png)
+
+4. คลิกที่ข้อความตัวอักษรสีฟ้า `Add` เพื่อเพิ่ม Media type ที่ต้องการ
+5. กรอก `ChatID` ที่ขอจาก `@IDBot` ลงในช่อง **Send to**
+
+   ![notification-telegram-22](/images/zabbix/notification-telegram-22.png)
+
+6. เสร็จแล้วคลิก `Add`
+7. จากนั้นคลิก `Update` เพื่อบันทึกการตั้งค่า
+
+   ![notification-telegram-23](/images/zabbix/notification-telegram-23.png)
+
+</Steps>
+
+## ตัวอย่างการแจ้งเตือน
+
+![notification-telegram-25](/images/zabbix/notification-telegram-25.png)
+
+![notification-telegram-24](/images/zabbix/notification-telegram-24.png)

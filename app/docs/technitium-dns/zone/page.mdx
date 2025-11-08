@@ -1,0 +1,139 @@
+---
+title: Zone - Technitium DNS
+sidebarTitle: Zone
+---
+
+import { Steps } from "nextra/components";
+
+# Zone คืออะไร?
+
+**Zone** คือพื้นที่หรือขอบเขตที่ใช้ในการจัดการ DNS Records ของโดเมนหนึ่ง ๆ โดยผู้ดูแลระบบสามารถควบคุมการตั้งค่าทั้งหมดภายในโซนนั้น เช่น:
+
+- การกำหนดชื่อเครื่อง (A Record)
+- การตั้งค่าเมลเซิร์ฟเวอร์ (MX Record)
+- การชี้โดเมนย่อย (CNAME)
+
+## ประเภทของ Zone และการใช้งาน
+
+| ประเภท                  | คำอธิบาย                                                                   | การใช้งาน                                                                               |
+| ----------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Primary Zone**        | โซนหลักที่เก็บข้อมูลต้นฉบับของ DNS Records                                 | ใช้เมื่อคุณเป็นเจ้าของหรือผู้ดูแล DNS และต้องการควบคุมทุกอย่างด้วยตัวเอง                |
+| **Secondary Zone**      | สำเนาแบบอ่านอย่างเดียวของ Primary Zone โดยใช้การ replicate ผ่าน DNS (AXFR) | ใช้สำหรับการสำรองข้อมูล เพิ่มความเสถียร หรือกระจายโหลดในการให้บริการ DNS                |
+| **Stub Zone**           | มีเฉพาะข้อมูล NS, SOA และ A Records ของเซิร์ฟเวอร์ที่เป็น Authoritative    | ใช้เพื่อระบุว่า DNS Server ที่แท้จริงของโดเมนนั้นอยู่ที่ไหน โดยไม่ต้องเก็บข้อมูลทั้งหมด |
+| **Reverse Lookup Zone** | ใช้แปลง IP Address ให้เป็นชื่อโดเมน (ตรงข้ามกับการ lookup ปกติ)            | ใช้ตรวจสอบว่า IP Address ใดสื่อถึงชื่อโดเมนใด (ผ่าน PTR Record)                         |
+| **Forward Lookup Zone** | โซนมาตรฐานสำหรับแปลงชื่อโดเมนให้เป็น IP Address                            | ใช้ในการเข้าถึงเว็บไซต์ อีเมล หรือบริการต่าง ๆ บนอินเทอร์เน็ต                           |
+
+## ขั้นตอนการกำหนดค่า Primary Zone
+
+### 1. สร้างโซนใหม่
+
+- ไปที่เมนู **Zones**
+- คลิกปุ่ม **Add Zone**
+
+  ![zone-1](/images/technitium-dns/zone-1.png)
+
+- กำหนดค่า:
+
+  - **Zone:** ระบุชื่อโดเมน เช่น `example.com`
+  - **Type:** เลือก `Primary Zone` (ค่าเริ่มต้น)
+
+- คลิก **Add**
+
+  ![zone-2](/images/technitium-dns/zone-2.png)
+
+### 2. เพิ่ม DNS Record
+
+- หลังจากสร้างโซนแล้ว จะเข้าสู่หน้าจัดการ DNS Records
+- คลิกปุ่ม **Add Record**
+
+  ![zone-3](/images/technitium-dns/zone-3.png)
+
+- กำหนดค่า:
+
+  - **Name:** ระบุชื่อเซิร์ฟเวอร์ เช่น `ns1`
+  - **Type:** เลือก `A`
+  - **IPv4 Address:** ระบุ IP เช่น `192.168.254.10`
+
+- คลิก **Save**
+
+  ![zone-4](/images/technitium-dns/zone-4.png)
+
+- ระบบจะแสดงรายการ Record ที่เพิ่มไว้ในหน้าโซน
+
+  ![zone-5](/images/technitium-dns/zone-5.png)
+
+## ขั้นตอนการกำหนดค่า Reverse Zone
+
+### 1. สร้างโซน Reverse Lookup
+
+- ไปที่เมนู **Zones**
+- คลิกปุ่ม **Add Zone**
+
+  ![zone-6](/images/technitium-dns/zone-6.png)
+
+- กำหนดค่า:
+
+  - **Zone:** ระบุ CIDR เช่น `192.168.254`
+  - **Type:** เลือก `Primary Zone`
+
+- คลิก **Add**
+
+  ![zone-7](/images/technitium-dns/zone-7.png)
+
+### 2. เพิ่ม PTR Record
+
+- หลังจากสร้างโซนแล้ว จะเข้าสู่หน้าจัดการ DNS Records
+- คลิกปุ่ม **Add Record**
+
+  ![zone-8](/images/technitium-dns/zone-8.png)
+
+- กำหนดค่า:
+
+  - **Name:** ะบุเลขท้ายของ IP (Last Octet) เช่น `10` สำหรับ IP `10.11.254.10`
+  - **Type:** เลือก `PTR`
+  - **Domain Name:** ระบุชื่อ FQDN เช่น `ns1.homelab.local`
+
+- คลิก **Save**
+
+  ![zone-9](/images/technitium-dns/zone-9.png)
+
+- ระบบจะแสดงรายการ Record ที่เพิ่มไว้ในหน้าโซน
+
+  ![zone-10](/images/technitium-dns/zone-10.png)
+
+## ทดสอบการทำงานของ DNS Server
+
+- ไปที่ **Network Adapter** ของเครื่องที่ต้องการทดสอบ
+- ตั้งค่า DNS เป็น IP Address ของ Technitium DNS Server
+- ลองเรียกชื่อโดเมนที่คุณกำหนดใน Zone เช่น `ns1.homelab.local`
+
+ตัวอย่าง:
+
+```bash
+root@ubuntu:~# dig homelab.local
+
+; <<>> DiG 9.18.39-0ubuntu0.24.04.2-Ubuntu <<>> homelab.local
+;; global options: +cmd
+;; Got answer:
+;; WARNING: .local is reserved for Multicast DNS
+;; You are currently testing what happens when an mDNS query is leaked to DNS
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 28117
+;; flags: qr aa rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;homelab.local.                 IN      A
+
+;; AUTHORITY SECTION:
+homelab.local.          900     IN      SOA     ns1.homelab.local. hostadmin.homelab.local. 2025110703 900 300 604800 900
+
+;; Query time: 0 msec
+;; SERVER: 192.168.254.10#53(192.168.254.10) (UDP)
+;; WHEN: Fri Nov 07 15:40:33 +07 2025
+;; MSG SIZE  rcvd: 92
+```
+
+> [!NOTE]
+>
+> หากการตั้งค่าถูกต้อง ระบบจะสามารถตอบกลับ IP Address ตามที่ระบุไว้ใน DNS Record ได้ทันที

@@ -1,0 +1,86 @@
+---
+title: Installation - Technitium DNS
+sidebarTitle: Installation
+---
+
+import { Steps } from "nextra/components";
+
+# Technitium DNS คืออะไร?
+
+**Technitium DNS** เป็นเซิร์ฟเวอร์ DNS แบบโอเพนซอร์สที่ใช้งานง่าย มาพร้อมกับแผงควบคุมผ่าน Web Interface ที่ช่วยให้คุณบริหารจัดการระบบ DNS ได้อย่างสะดวกและมีประสิทธิภาพ
+
+DNS (Domain Name System) คือระบบที่ทำหน้าที่แปลงชื่อเว็บไซต์ที่เราใช้งานกันทั่วไป (เช่น google.com) ให้กลายเป็นหมายเลข IP Address (เช่น 142.250.190.78) ซึ่งเป็นรูปแบบที่คอมพิวเตอร์ใช้ในการสื่อสารและเข้าถึงข้อมูลต่าง ๆ บนอินเทอร์เน็ต
+
+## คุณสมบัติเด่น
+
+- จัดการ DNS Server ผ่านเว็บอินเตอร์เฟสที่ใช้งานง่าย
+- รองรับการสร้างและจัดการโซน DNS ได้อย่างเต็มรูปแบบ
+- ทำหน้าที่เป็น DNS Resolver เพื่อสอบถามข้อมูลจากเซิร์ฟเวอร์ภายนอก
+- รองรับการทำงานเป็น DHCP Server เพื่อแจกจ่าย IP Address ให้กับอุปกรณ์ในเครือข่าย
+
+## ขั้นตอนการติดตั้ง Technitium DNS บนระบบ Linux Ubuntu
+
+<Steps>
+
+### อัปเดตแพ็กเกจให้เป็นเวอร์ชันล่าสุด
+
+เปิด Terminal แล้วรันคำสั่งต่อไปนี้เพื่ออัปเดตระบบ
+
+```bash
+sudo apt update && sudo apt upgrade
+```
+
+### ติดตั้ง Technitium DNS
+
+ใช้สคริปต์ติดตั้งอย่างเป็นทางการจากเว็บไซต์ Technitium
+
+```bash
+sudo curl -sSL https://download.technitium.com/dns/install.sh | sudo bash
+```
+
+ระบบจะดาวน์โหลดและติดตั้งซอฟต์แวร์โดยอัตโนมัติ รอจนกระทั่งการติดตั้งเสร็จสมบูรณ์
+
+</Steps>
+
+## เข้าสู่ระบบ Technitium DNS ครั้งแรก
+
+- เปิดเว็บเบราว์เซอร์ แล้วไปที่ `http://<IP_ADDRESS>:5380`
+- ระบบจะพาคุณเข้าสู่หน้าตั้งค่าครั้งแรก โดยจะ บังคับให้กำหนดรหัสผ่านสำหรับผู้ใช้ `admin`
+- หลังจากตั้งรหัสผ่านแล้ว คุณจะสามารถเข้าสู่แผงควบคุม Web Interface ได้ทันที
+
+  ![setup-1](/images/technitium-dns/setup-1.png)
+
+## การตั้งค่าเบื้องต้นใน Technitium DNS
+
+### 1. ตั้งค่าทั่วไป (General)
+
+- ไปที่เมนู **Settings** > แท็บ **General**
+- กำหนดค่าดังนี้:
+
+  - **DNS Server Domain:** ระบุชื่อเซิร์ฟเวอร์ในรูปแบบ Fully Qualified Domain Name (FQDN)
+
+    ![setup-2](/images/technitium-dns/setup-2.png)
+
+  - **Zone Defaults:** เลือก `Use SOA Serial Date Scheme`
+
+    ![setup-3](/images/technitium-dns/setup-3.png)
+
+- เลื่อนลงไปด้านล่างสุด แล้วคลิก **Save Settings**
+
+### 2. ตั้งค่าบริการเว็บ (Web Service)
+
+- ไปที่เมนู **Settings** > แท็บ **Web Service**
+- ในส่วน **HTTPS Options** ให้คลิกเลือกตามภาพประกอบ HTTPS Options: คลิกเลือกตามภาพ
+
+  ![setup-4](/images/technitium-dns/setup-4.png)
+
+- เลื่อนลงไปด้านล่างสุด แล้วคลิก **Save Settings**
+
+### 3. ตั้งค่า Proxy & Forwarders
+
+- ไปที่เมนู **Settings** > แท็บ **Proxy & Forwarders**
+- ในส่วน **Forwarders:** ให้ระบุ IP Address ของ DNS Server ที่ต้องการใช้งาน
+
+  ![setup-5](/images/technitium-dns/setup-5.png)
+
+- เลื่อนลงไปด้านล่างสุด แล้วคลิก **Save Settings**

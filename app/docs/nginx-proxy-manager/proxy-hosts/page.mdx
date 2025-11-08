@@ -1,0 +1,76 @@
+---
+title: Proxy Hosts - Nginx Proxy Manager
+sidebarTitle: Proxy Hosts
+---
+
+import { Steps } from "nextra/components";
+
+# Proxy Hosts ใน Nginx Proxy Manager
+
+**Proxy Hosts** เป็นฟีเจอร์หลักของ Nginx Proxy Manager ที่ช่วยให้คุณสามารถตั้งค่า Reverse Proxy ได้ง่ายผ่านอินเทอร์เฟซแบบกราฟิก โดยไม่ต้องแก้ไขไฟล์คอนฟิกด้วยตนเอง
+
+## Reverse Proxy คืออะไร?
+
+Reverse Proxy คือเซิร์ฟเวอร์ตัวกลางที่ทำหน้าที่รับคำขอจากผู้ใช้งาน แล้วส่งต่อไปยังเซิร์ฟเวอร์ปลายทาง (Backend) จากนั้นนำผลลัพธ์กลับมาส่งให้ผู้ใช้ โดยที่ผู้ใช้ไม่จำเป็นต้องรู้ว่าเบื้องหลังมีเซิร์ฟเวอร์ใดทำงานอยู่
+
+### ตัวอย่างการทำงาน
+
+- ผู้ใช้เข้าเว็บไซต์ `www.example.com`
+- Nginx Proxy Manager รับคำขอในฐานะ Reverse Proxy
+- ส่งคำขอไปยังเซิร์ฟเวอร์ภายใน เช่น `192.168.0.2:8080`
+- เซิร์ฟเวอร์ปลายทางตอบกลับข้อมูล
+- Nginx Proxy Manager ส่งข้อมูลกลับไปยังผู้ใช้งาน
+
+## ขั้นตอนการกำหนดค่า Proxy Hosts บน Nginx Proxy Manager
+
+<Steps>
+
+### เข้าสู่ระบบจัดการ
+
+เปิดเว็บเบราว์เซอร์และเข้าไปที่ `http://<IP_ADDRESS>:81`
+
+### ไปที่เมนู Proxy Hosts
+
+- คลิกเมนู **Proxy Hosts**
+
+  ![proxy-hosts-1](/images/nginx-proxy-manager/proxy-hosts-1.png)
+
+- จากนั้นคลิกปุ่ม **Add Proxy Host**
+
+  ![proxy-hosts-2](/images/nginx-proxy-manager/proxy-hosts-2.png)
+
+### ตั้งค่าในแท็บ Details
+
+- **Domain Names:** ระบุโดเมน เช่น `graylog.example.com`
+- **Scheme:** เลือก `http` หรือ `https` ตามโปรโตคอลของ backend
+- **Forward Hostname / IP:** กรอก IP หรือชื่อของเซิร์ฟเวอร์ปลายทาง เช่น `192.168.0.10`
+- **Forward Port:** ระบุพอร์ต เช่น `9000`
+- เปิดใช้งาน **Block Common Exploits** เพื่อป้องกันการโจมตีพื้นฐาน
+- เปิด **WebSockets Support** หาก backend ใช้ WebSocket
+- หากต้องการจำกัดการเข้าถึง ให้เลือก **Access List**
+
+  ![proxy-hosts-3](/images/nginx-proxy-manager/proxy-hosts-3.png)
+
+### ตั้งค่าในแท็บ SSL
+
+- **Request a new SSL Certificate:** ขอใบรับรองฟรีจาก Let's Encrypt
+- **Force SSL:** บังคับให้ redirect จาก HTTP → HTTPS
+- **HTTP/2 Support:** เพิ่มประสิทธิภาพความเร็วในการโหลดเว็บไซต์
+- **HSTS Enabled:** บังคับให้เบราว์เซอร์ใช้ HTTPS อย่างถาวร
+- **HSTS Subdomains:** ใช้ HSTS กับ subdomain ด้วย
+- **DNS Challenge:** ใช้เมื่อไม่สามารถเปิดพอร์ต 80/443 ได้ (รองรับเฉพาะบางผู้ให้บริการ DNS)
+
+  ![proxy-hosts-4](/images/nginx-proxy-manager/proxy-hosts-4.png)
+
+### บันทึกการตั้งค่า
+
+คลิกปุ่ม Save เพื่อสร้าง Proxy Host และเปิดใช้งาน
+
+</Steps>
+
+## คำแนะนำเพิ่มเติม
+
+- ตรวจสอบว่า DNS Server ได้ตั้งค่า `CNAME` หรือ `A Record` ให้ชี้มายัง IP ของ Nginx Proxy Manager แล้ว
+- เปิดใช้งาน SSL (HTTPS) เพื่อเพิ่มความปลอดภัยในการเชื่อมต่อ
+- หาก backend ใช้ WebSocket (เช่น Proxmox, Grafana) อย่าลืมเปิด **WebSockets Support**
+- เปิดใช้งาน **Block Common Exploits** เพื่อป้องกันการโจมตีทั่วไป

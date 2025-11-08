@@ -1,0 +1,84 @@
+---
+title: Repository - Proxmox VE
+sidebarTitle: Repository
+---
+
+import { Steps } from "nextra/components";
+
+# Proxmox VE Repository คืออะไร?
+
+**Proxmox VE Repository** คือแหล่งจัดเก็บซอฟต์แวร์ แพ็กเกจ และอัปเดตต่าง ๆ สำหรับระบบ **Proxmox VE** ซึ่งเป็นแพลตฟอร์มโอเพ่นซอร์สสำหรับการบริหารจัดการ Virtual Machines (VMs) และ Containers (LXC)
+
+## ประเภทของ Repository ที่มีให้เลือก
+
+1. Enterprise Repository
+
+   - URL: `https://enterprise.proxmox.com/debian/pve`
+   - เสถียรและปลอดภัยที่สุด
+   - แพ็กเกจผ่านการทดสอบอย่างละเอียดก่อนปล่อยใช้งาน
+   - ต้องมี Proxmox VE Subscription (มีค่าใช้จ่าย)
+   - เหมาะสำหรับระบบที่ใช้งานจริงในองค์กร (Production)
+
+2. No-Subscription Repository
+
+   - URL: `http://download.proxmox.com/debian/pve`
+   - ใช้งานฟรี ไม่ต้องมี Subscription
+   - แพ็กเกจอาจไม่ได้รับการทดสอบเข้มงวดเท่าระบบ Enterprise
+   - เหมาะสำหรับผู้ใช้ทั่วไป หรือใช้เพื่อการทดลองและเรียนรู้
+
+3. Test Repository
+
+   - URL: `http://download.proxmox.com/debian/pve/dists/<codename>/test/`
+   - ใช้สำหรับทดสอบฟีเจอร์ใหม่ก่อนปล่อยใช้งานจริง
+   - อาจมีความไม่เสถียร
+   - ไม่แนะนำให้ใช้ในระบบ production
+
+## ขั้นตอนการอัปเดตแพ็กเกจใน Proxmox VE (สำหรับ No-Subscription)
+
+<Steps>
+
+### ปิดใช้งาน Enterprise Repository
+
+- เลือก Node ที่ต้องการ เช่น `pve1`
+- ไปที่เมนู **Updates** > **Repositories**
+- คลิกเลือกบรรทัด `pve-enterprise` แล้วกด `Disable`
+
+![setup-1](/images/proxmox-ve/setup-1.png)
+
+### เพิ่ม No-Subscription Repository
+
+- ไปที่แท็บ **APT Repositories**
+- คลิกปุ่ม `Add`
+
+  ![setup-2](/images/proxmox-ve/setup-2.png)
+
+- เลือกประเภท Repository เป็น **No-Subscription**
+
+  ![setup-3](/images/proxmox-ve/setup-3.png)
+
+- คลิก `Add` เพื่อเพิ่มแหล่งแพ็กเกจ
+
+### อัปเดตและอัปเกรดแพ็กเกจ
+
+- ไปที่เมนู Updates
+- คลิก `Refresh` เพื่อดึงข้อมูลแพ็กเกจล่าสุด
+
+![setup-4](/images/proxmox-ve/setup-4.png)
+
+- รอจนสถานะขึ้นว่า `OK` แล้วกด `Esc` เพื่อปิดหน้าต่าง
+
+![setup-5](/images/proxmox-ve/setup-5.png)
+
+- คลิก `Upgrade` เพื่อเริ่มการอัปเกรดแพ็กเกจ
+
+![setup-6](/images/proxmox-ve/setup-6.png)
+
+- ในหน้าต่าง Terminal ที่ปรากฏขึ้น ให้พิมพ์ `Y` แล้วกด `Enter` เพื่อยืนยัน
+
+![setup-7](/images/proxmox-ve/setup-7.png)
+
+### รีบูตระบบ
+
+**หลังจากอัปเกรดเสร็จ ระบบจะแนะนำให้ รีบูตเครื่อง** เพื่อให้ **Kernel เวอร์ชันใหม่** ทำงานอย่างสมบูรณ์
+
+</Steps>

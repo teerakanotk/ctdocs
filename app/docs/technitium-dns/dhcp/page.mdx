@@ -1,0 +1,93 @@
+---
+title: DHCP - Technitium DNS
+sidebarTitle: DHCP
+---
+
+import { Steps } from "nextra/components";
+
+# DHCP (Dynamic Host Configuration Protocol)
+
+DHCP ย่อมาจาก Dynamic Host Configuration Protocol ครับ มันคือโปรโตคอล (ชุดคำสั่ง/ข้อตกลง) ที่ช่วยให้ การตั้งค่าเครือข่ายสำหรับอุปกรณ์ต่างๆ เป็นไปโดยอัตโนมัติ แทนที่เราจะต้องมานั่งกำหนดค่าเองทีละเครื่อง
+
+### DHCP ทำอะไรให้เราบ้าง?
+
+ลองนึกภาพว่า DHCP คือ พนักงานแจกบัตรประจำตัว ให้กับอุปกรณ์ที่มาเข้าร่วมเครือข่าย โดยจะแจกข้อมูลสำคัญที่จำเป็นต่อการเชื่อมต่อ ดังนี้:
+
+- IP Address: เลขที่บ้าน ของอุปกรณ์ในเครือข่ายนั้นๆ เพื่อให้อุปกรณ์อื่นหาเจอกันได้
+- Subnet Mask: ขอบเขต ว่าอุปกรณ์นี้อยู่ในวงบ้าน/หมู่บ้านเครือข่ายไหน
+- Default Gateway: ประตูทางออก ที่จะใช้ออกไปคุยกับเครือข่ายอื่น (เช่น ออกไปเล่นอินเทอร์เน็ต)
+- DNS Servers: สมุดโทรศัพท์ ที่ใช้แปลงชื่อเว็บไซต์ที่เราพิมพ์ (เช่น google.com) ให้เป็น IP Address ที่คอมพิวเตอร์เข้าใจ
+
+## วิธีตั้งค่า DHCP Scope (ช่วง IP ที่จะแจกจ่าย)
+
+<Steps>
+
+### เข้าสู่หน้าการตั้งค่า
+
+- ไปที่เมนู **DHCP**
+- เลือกแท็บ **Scopes**
+
+  ![dhcp-1](/images/technitium-dns/dhcp-1.png)
+
+- คลิก **Add scope**
+
+  ![dhcp-2](/images/technitium-dns/dhcp-2.png)
+
+### กรอกข้อมูลพื้นฐาน (ช่วง IP และเวลาเช่า)
+
+- **Name:** ตั้งชื่อ Scope
+- **Starting Address:** IP เริ่มต้น ที่จะแจก (เช่น 192.168.1.10)
+- **Ending Address:** IP สุดท้าย ที่จะแจก (เช่น 192.168.1.200)
+- **Subnet Mask:** ระบุ ขอบเขตเครือข่าย (เช่น 255.255.255.0)
+- **Lease Time:** ระยะเวลาเช่า IP (นานแค่ไหนที่อุปกรณ์จะได้ใช้ IP นี้ก่อนต้องขอใหม่)
+
+  ![dhcp-3](/images/technitium-dns/dhcp-3.png)
+
+### ตั้งค่าการตรวจสอบและการค้นหาชื่อโดเมน
+
+- **Ping Check:** ✅ เปิด เพื่อให้ DHCP Server ตรวจสอบว่า IP ที่จะแจกนั้นว่างจริงหรือไม่
+
+  ![dhcp-4](/images/technitium-dns/dhcp-4.png)
+
+- **Domain Name:** กรอกชื่อโดเมนหลักของเครือข่าย (ถ้ามี)
+- **Domain Search List:** ระบุรายการโดเมนที่ต้องการให้ระบบค้นหาอัตโนมัติ
+
+  ![dhcp-5](/images/technitium-dns/dhcp-5.png)
+
+### ระบุที่อยู่สำคัญของเครือข่าย (Gateway และ DNS)
+
+ส่วนนี้สำคัญมาก เพราะเป็นการบอกอุปกรณ์ว่าจะออกอินเทอร์เน็ตทางไหน และจะแปลงชื่อเว็บไซต์ได้อย่างไร:
+
+- **Router Address:** กรอก Default Gateway (ที่อยู่ IP ของ Router/ตัวออกอินเทอร์เน็ต)
+- **DNS Servers:** ยกเลิกการเลือก "Use This DNS Server" (ถ้ามี) และระบุ IP Address ของ DNS Server ที่ต้องการใช้ (เช่น IP ของ Google DNS: 8.8.8.8 หรือ IP ของ DNS Server ภายใน)
+
+  ![dhcp-6](/images/technitium-dns/dhcp-6.png)
+
+### บันทึกค่า
+
+เมื่อกรอกข้อมูลครบถ้วนแล้ว ให้เลื่อนลงไปด้านล่างสุดและกด Save เป็นอันเสร็จสิ้น
+
+![dhcp-7](/images/technitium-dns/dhcp-7.png)
+
+</Steps>
+
+## ขั้นตอนการตั้งค่า DHCP Relay
+
+หลังจากตั้งค่า DHCP Scope บน Technitium DNS Server เรียบร้อยแล้ว ขั้นตอนต่อไปคือการบอกให้อุปกรณ์ Gateway (เช่น Router หรือ Firewall) รู้จักกับ DHCP Server ของเรา เพื่อให้สามารถส่งคำขอ IP Address จากอุปกรณ์อื่น ๆ ข้ามเครือข่ายไปยัง Server ได้อย่างถูกต้อง
+
+### สิ่งที่ต้องทำบน Gateway (Router/Firewall)
+
+การตั้งค่าจะขึ้นอยู่กับยี่ห้อและรุ่นของอุปกรณ์ Gateway ของคุณ แต่หลักการคือการ **กำหนดค่าตัวเลือก (Option)** ในส่วนของ **DHCP Relay** หรือ **DHCP Helper Address** ให้ชี้ไปยัง IP Address ของ **Technitium DNS Server**
+
+| รายละเอียด            | ค่าที่ต้องใช้                                                            |
+| --------------------- | ------------------------------------------------------------------------ |
+| ตำแหน่งการตั้งค่า     | "มักอยู่ในเมนู Network, LAN, DHCP หรือ Relay/Helper ของ Router/Firewall" |
+| IP Address ที่ต้องใส่ | IP Address ของเครื่อง Technitium DNS Server ที่ทำหน้าที่เป็น DHCP Server |
+
+**ตัวอย่างการทำงาน**
+
+1. อุปกรณ์ใหม่ (A) เชื่อมต่อเครือข่ายและร้องขอ IP Address
+2. Router/Gateway ได้รับคำขอ แต่รู้ว่าตัวเองไม่ใช่ DHCP Server
+3. Router/Gateway จะใช้การตั้งค่า DHCP Relay ที่เรากำหนดไว้ ส่งต่อ (Relay) คำขอไปยัง IP Address ของ Technitium DNS Server
+4. Technitium DNS Server จ่าย IP Address กลับมาให้ Router/Gateway
+5. Router/Gateway ส่ง IP Address นั้นกลับไปให้อุปกรณ์ A เพื่อให้เชื่อมต่อได้

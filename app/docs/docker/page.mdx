@@ -1,0 +1,76 @@
+---
+title: Docker
+asIndexPage: true
+---
+
+import { Steps } from "nextra/components";
+
+# Docker คืออะไร?
+
+**Docker** เป็นแพลตฟอร์มที่ช่วยให้นักพัฒนาสามารถสร้าง ส่งมอบ และรันแอปพลิเคชันภายในสิ่งที่เรียกว่า “คอนเทนเนอร์” (Container) ซึ่งเป็นสภาพแวดล้อมจำลองที่รวมทุกสิ่งที่แอปพลิเคชันต้องการไว้ครบถ้วน ไม่ว่าจะเป็นโค้ด ไลบรารี หรือการตั้งค่าต่าง ๆ
+
+การใช้ Docker ทำให้แอปพลิเคชันสามารถทำงานได้อย่างเสถียรและเหมือนกันทุกครั้ง ไม่ว่าจะรันบนเครื่องพัฒนา เซิร์ฟเวอร์ หรือระบบคลาวด์ โดยไม่ต้องกังวลเรื่องความแตกต่างของระบบปฏิบัติการหรือการติดตั้งซอฟต์แวร์ล่วงหน้า
+
+### ข้อดีของ Docker
+
+- ใช้สภาพแวดล้อมเดียวกันทั้งในขั้นตอนพัฒนาและการใช้งานจริง ทำให้ลดปัญหาที่เกิดจากความแตกต่างของระบบ
+- ช่วยให้การนำแอปพลิเคชันขึ้นใช้งาน (Deploy) ทำได้รวดเร็วและง่ายขึ้น
+- รองรับการทำงานร่วมกับระบบพัฒนาแบบอัตโนมัติ เช่น Continuous Integration (CI) และ Continuous Deployment (CD)
+- เหมาะสำหรับการพัฒนาแอปพลิเคชันแบบ Microservices ที่แยกส่วนการทำงานอย่างชัดเจน
+- รองรับการใช้งานบนหลายระบบปฏิบัติการ ไม่ว่าจะเป็น Linux, macOS หรือ Windows
+
+## ขั้นตอนการติดตั้ง Docker บน Ubuntu
+
+<Steps>
+
+### อัปเดตระบบ
+
+อัปเดตแพ็กเกจทั้งหมดให้เป็นเวอร์ชันล่าสุด
+
+```bash
+sudo apt update
+sudo apt upgrade
+```
+
+### ติดตั้งเครื่องมือพื้นฐานและเพิ่ม GPG Key ของ Docker
+
+```bash
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+```
+
+### เพิ่ม Docker Repository
+
+```bash
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+```
+
+### ติดตั้ง Docker Engine และปลั๊กอินที่จำเป็น
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+### ทดสอบการติดตั้ง
+
+รันคำสั่งนี้เพื่อตรวจสอบว่า Docker ทำงานได้ถูกต้อง
+
+```bash
+sudo docker run hello-world
+```
+
+หากติดตั้งสำเร็จ คุณจะเห็นข้อความขึ้นต้นว่า
+
+```
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+```
+
+</Steps>

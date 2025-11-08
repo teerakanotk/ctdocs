@@ -1,0 +1,41 @@
+---
+title: CT Templates - Proxmox VE
+sidebarTitle: Template
+---
+
+import { Steps } from "nextra/components";
+
+## ขั้นตอนการดาวน์โหลด CT Templates บน Proxmox VE
+
+<Steps>
+
+### เข้าสู่ระบบผ่าน Web Interface
+
+เปิดเว็บเบราว์เซอร์ แล้วไปที่ `https://<IP_ADDRESS>:8006`
+
+### ไปยังเมนู CT Templates
+
+เลือกเมนู **Datacenter** > **Node** > **local** > **CT Templates**
+
+![lxc-template-1](/images/proxmox-ve/lxc-template-1.png)
+
+### เปิดหน้าต่างเลือกเทมเพลต
+
+คลิกปุ่ม **Templates** ที่ด้านบนของหน้า
+
+![lxc-template-2](/images/proxmox-ve/lxc-template-2.png)
+
+### เลือกและดาวน์โหลดเทมเพลต
+
+- เลือกเทมเพลตที่ต้องการใช้งานจากรายการ
+- คลิกปุ่ม **Download** เพื่อเริ่มดาวน์โหลด
+
+  ![lxc-template-3](/images/proxmox-ve/lxc-template-3.png)
+
+### ตรวจสอบผลการดาวน์โหลด
+
+เมื่อดาวน์โหลดเสร็จ เทมเพลตจะปรากฏในรายการ พร้อมใช้งานสำหรับการสร้าง Container
+
+![lxc-template-4](/images/proxmox-ve/lxc-template-4.png)
+
+</Steps>

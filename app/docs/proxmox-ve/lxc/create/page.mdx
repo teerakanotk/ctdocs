@@ -1,0 +1,124 @@
+---
+title: Create CT - Proxmox VE
+sidebarTitle: Create CT
+---
+
+import { Steps } from "nextra/components";
+
+# LXC (Linux Containers) คืออะไร?
+
+**LXC** เป็นเทคโนโลยีสำหรับการจำลองระบบปฏิบัติการแบบ **OS-level virtualization** บน Linux โดยช่วยให้สามารถรันหลายระบบ (containers) แยกจากกันได้ภายใต้เคอร์เนลเดียวกัน
+
+## จุดเด่นของ LXC
+
+- ใช้เคอร์เนลร่วมกันระหว่าง containers ทั้งหมด ทำให้ประหยัดทรัพยากร
+- แยก namespace เพื่อความปลอดภัยและความเป็นอิสระของแต่ละ container
+- ประสิทธิภาพใกล้เคียงกับการรันบนระบบจริง (near-native performance)
+- เหมาะสำหรับ workload ที่ต้องการความเบาและรวดเร็ว
+
+## เปรียบเทียบ LXC กับ Docker
+
+| หัวข้อ        | LXC                                | Docker                      |
+| ------------- | ---------------------------------- | --------------------------- |
+| ระดับการทำงาน | OS-level container                 | Application-level container |
+| การจัดการ     | ใช้ systemd / CLI โดยตรง           | ใช้ Docker CLI/API          |
+| ความยืดหยุ่น  | ยืดหยุ่นสูง แต่ซับซ้อนกว่าเล็กน้อย | ใช้ง่าย มี ecosystem มากมาย |
+| ความเบา       | เบากว่า VM แต่หนักกว่า Docker      | เบามาก ใช้งานง่าย           |
+
+## ขั้นตอนการสร้าง LXC Container บน Proxmox VE
+
+<Steps>
+
+### เริ่มต้นการสร้าง
+
+คลิกปุ่ม **Create CT** ที่ด้านบนของหน้า Dashboard
+
+![lxc-create-1](/images/proxmox-ve/lxc-create-1.png)
+
+### กรอกข้อมูลพื้นฐาน
+
+- **Node:** เลือกโหนดที่ต้องการใช้งาน
+- **CT ID:** กำหนดหมายเลข Container ID (สามารถปล่อยให้ระบบกำหนดอัตโนมัติได้)
+- **Hostname:** ตั้งชื่อโฮสต์
+- **Password / Confirm password:** ตั้งรหัสผ่านสำหรับผู้ใช้ `root`
+- **SSH public key:** อัปโหลด SSH Key หากต้องการใช้งานแบบไม่ใช้รหัสผ่าน
+
+คลิก **Next**
+
+![lxc-create-2](/images/proxmox-ve/lxc-create-2.png)
+
+### เลือก Template
+
+- **Storage:** เลือก `local`
+- **Template:** เลือกเทมเพลตที่ต้องการใช้งาน
+
+คลิก **Next**
+
+> [!NOTE]
+>
+> หากยังไม่มีเทมเพลต ดูวิธีดาวน์โหลดได้ที่ [ขั้นตอนการดาวน์โหลด Template](/server/proxmox-ve/lxc/template)
+
+![lxc-create-3](/images/proxmox-ve/lxc-create-3.png)
+
+### กำหนดขนาดพื้นที่เก็บข้อมูล
+
+- **Storage:** เลือกพื้นที่เก็บข้อมูลที่ต้องการ
+- **Disk size (GiB):** ระบุขนาดดิสก์ที่ต้องการใช้งาน
+
+คลิก **Next**
+
+![lxc-create-4](/images/proxmox-ve/lxc-create-4.png)
+
+### กำหนดค่า CPU
+
+- **Cores:** ระบุจำนวนคอร์ของ CPU ที่ต้องการให้ Container ใช้งาน
+
+คลิก **Next**
+
+![lxc-create-5](/images/proxmox-ve/lxc-create-5.png)
+
+### กำหนดค่า Memory
+
+- **Memory (MiB):** ระบุขนาด RAM
+- **Swap (MiB):** ระบุขนาดพื้นที่ Swap
+
+  ![lxc-create-6](/images/proxmox-ve/lxc-create-6.png)
+
+### ตั้งค่าระบบเครือข่าย (Network)
+
+- **Name:** ตั้งชื่อ Interface
+- **MAC address:** ปล่อยให้ระบบกำหนดอัตโนมัติ
+- **Bridge:** เลือก bridge เช่น `vmbr0`
+- **VLAN Tag:** ใส่หากมีการใช้งาน VLAN
+- **Firewall:** แนะนำให้เปิดใช้งาน
+- **IPv4:** เลือก Static หรือ DHCP
+- **IPv4/CIDR:** ระบุ IP และ Netmask เช่น `192.168.0.10/24`
+- **Gateway (IPv4):** ระบุ Gateway เช่น `192.168.0.1`
+
+คลิก **Next**
+
+![lxc-create-7](/images/proxmox-ve/lxc-create-7.png)
+
+### ตั้งค่า DNS
+
+- **DNS domain:** ใส่โดเมน หรือปล่อยเป็นค่าเริ่มต้น
+- **DNS servers:** ระบุ IP DNS เช่น `1.1.1.1, 8.8.8.8` หรือปล่อยว่าง
+
+คลิก **Next**
+
+![lxc-create-8](/images/proxmox-ve/lxc-create-8.png)
+
+### ตรวจสอบและยืนยัน
+
+- ตรวจสอบค่าทั้งหมดที่ตั้งไว้
+- หากถูกต้อง คลิก **Finish** เพื่อเริ่มสร้าง Container
+
+  ![lxc-create-9](/images/proxmox-ve/lxc-create-9.png)
+
+### เสร็จสิ้นการสร้าง
+
+ระบบจะแสดงสถานะ **TASK OK** เมื่อการสร้างเสร็จสมบูรณ์
+
+![lxc-create-10](/images/proxmox-ve/lxc-create-10.png)
+
+</Steps>
