@@ -9,17 +9,45 @@ export function sorted<T extends Record<string, unknown>>(
   obj: T,
   order: "asc" | "desc" = "asc"
 ): T {
-  type Mutable<T> = { -readonly [K in keyof T]: T[K] }; // Make T writable
+  const entries = Object.entries(obj).sort(([a], [b]) =>
+    order === "desc" ? b.localeCompare(a) : a.localeCompare(b)
+  );
 
-  const sortedObj = Object.keys(obj)
-    .sort((a, b) =>
-      order === "desc" ? b.localeCompare(a) : a.localeCompare(b)
-    )
-    .reduce((acc, key) => {
-      const k = key as keyof T;
-      acc[k] = obj[k];
-      return acc;
-    }, {} as Mutable<T>);
-
-  return sortedObj as T;
+  return Object.fromEntries(entries) as T;
 }
+
+/**
+ * Generates a unique Nextra-compatible separator metadata entry.
+ *
+ * @example
+ * separator({ title: "Server" });
+ * // => { _sep_1: { type: "separator", title: "Server" } }
+ */
+let separatorId = 0;
+
+export interface SeparatorOptions {
+  /** Separator title */
+  title: string;
+  /** Optional theme overrides */
+  theme?: Record<string, boolean | string>;
+  /** Optional custom key prefix */
+  prefix?: string;
+}
+
+export const separator = ({
+  title,
+  theme,
+  prefix = "_sep_",
+}: SeparatorOptions) => {
+  separatorId++;
+
+  const key = `${prefix}${separatorId}`;
+
+  return {
+    [key]: {
+      type: "separator" as const,
+      title,
+      ...(theme ? { theme } : {}),
+    },
+  };
+};
