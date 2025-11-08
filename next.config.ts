@@ -14,6 +14,15 @@ const nextConfig: NextConfig = {
       "next-mdx-import-source-file": "./mdx-components.tsx",
     },
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/docs",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withNextra(nextConfig);
