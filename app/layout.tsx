@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Prompt } from "next/font/google";
 import "./globals.css";
 
-import { Footer, Layout, Navbar } from "nextra-theme-docs";
+import { Layout, Navbar } from "nextra-theme-docs";
 import { Head } from "nextra/components";
 import { getPageMap } from "nextra/page-map";
 
@@ -25,7 +25,6 @@ const navbar = (
     projectLink="https://github.com/teerakanotk/ctdocs"
   />
 );
-const footer = <Footer>MIT {new Date().getFullYear()} © CTDOCS.</Footer>;
 
 export default async function RootLayout({
   children,
@@ -40,7 +39,6 @@ export default async function RootLayout({
           navbar={navbar}
           pageMap={await getPageMap()}
           docsRepositoryBase="https://github.com/teerakanotk/ctdocs/tree/main"
-          footer={footer}
           sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: false }}
         >
           {children}
